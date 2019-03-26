@@ -1,0 +1,32 @@
+\subsection{Technology}
+\begin{table}[h]
+\begin{tabular}{ll}
+\textbf{Service} & \textbf{Technology}  \\ \hline
+Random Number Generator circle& Python Flask \\
+Database to store previous Numbers & Mysql Database \\
+Microservice for requesting new Numbers & Spring Boot Java \\
+Microservice for gathering Statistics & Spring Boot Java \\
+Frontend & Angular with Spring Boot \\
+Routing Server & Nginx \\
+Server OS & Ubuntu Server 18.5.1  LTS
+\end{tabular}
+\end{table}
+
+All the Applications are Running inside of an own Docker Container and Managed within a Kubernetes Pod and accessible via a Kubernetes Service where only the Frontend Service is bound to a Node Port.
+\subsection{Model}
+The Following Picture should give an overview about the different Services and how they work with each other.
+
+\begin{tikzpicture}
+\node (A) at (0,0) [ellipse, draw] {Random Generator};
+\node (B) at (5,-3) [ellipse, draw] {Statistic Service};
+\node (C) at (6,-1) [circle, draw] {Database};
+\node (D) at (9,0) [ellipse, draw] {Frontend};
+\node (E) at (5,1) [ellipse, draw] {Middle Tier};
+
+\draw[<->, thick] (B) to[bend left=20] (C);
+\draw[->, thick] (B) to[bend right=20] (D);
+\draw[->, thick] (A) to[bend left=10] (E);
+\draw[->, thick] (E) to[bend right=10] (D); 
+\draw[<->, thick] (E) to[bend left=10] (C);
+
+\end{tikzpicture}
