@@ -1,6 +1,12 @@
 
 Applications/
 
+*.pdf
+*.log
+*.aux
+*.toc
+*.gz
+*.dot
 *.class
 *.jar
 *.tar
