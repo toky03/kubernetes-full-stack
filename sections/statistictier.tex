@@ -1,0 +1,191 @@
+The Statistic Service has the same setup as the Middle Tier client.
+Therefore the Project will be created too with Spring Boot initializer.
+\begin{tabbing}
+\begin{tabular}{ll}
+Project & Maven Project \\
+Language & Java \\
+Spring Boot & 2.1.3 (All versions would apply) \\
+Group & ch.toky.randgen \\
+Artifact & stattier \\
+Name & Stattier \\
+Description & Statistic Tier Client for Random Generator Application \\
+Packaging & Jar \\
+Java Version & 8 \\
+Dependencies & Web, JPA, MySQL, Rest Repositories
+\end{tabular}
+\end{tabbing}
+
+For the statistic Tier Service we need to create the following Package structure:
+\dirtree{%
+.1 ch.toky.randgen.statservice.
+.2 StatserviceApplication.java.
+.2 ch.toky.randgen.statservice.controller.
+.3 Controller.java.
+.2 ch.toky.randgen.statservice.model.
+.3 PodStat.java.
+.3 Series.java.
+.3 SeriesItem.java.
+.3 Stat.java.
+.2 ch.toky.randgen.statservice.repository.
+.3 PodStatRepository.java.
+.2 ch.toky.randgen.statservice.service.
+.3 StatService.java.
+}
+
+For this time, we will leave the Main Class allone in the file StatserviceApplication.java. Which means we do not have to change this file as Spring Boot already did everything needed for us.
+
+Controller.java will be annotated with @RestController as it contains all our endpoints.
+
+next, we need the StatService class in this controller, this is why we inject it with @Autowired.
+\begin{lstlisting}[language=Java]
+@Autowired
+StatService statService;
+\end{lstlisting}
+
+Now we can also create our two endpoints, one for all stats, and one with the history.
+
+\begin{lstlisting}[language=Java]
+@RequestMapping(method = RequestMethod.GET, value="/")
+public List<Stat> getAllPodStats(){
+
+    return statService.getAllPodStats();
+}
+    
+    
+@RequestMapping(method = RequestMethod.GET, value="/history")
+public List<Series> getAllPodStatsHistory(){
+        
+	return statService.getPodHistory();	
+}
+\end{lstlisting}
+
+We could leave the method out as GET is anyway the default method but we leave it here for for the understanding.
+
+next we are going to declare all our Entities.
+
+All of them are annotated with @Entity.
+For simplicity i will only show all fields but of cource also the getter and setter methods needs to be implemented.
+
+Fields for PodStat:
+
+\begin{lstlisting}[language=Java]
+@Id
+@GeneratedValue(strategy=GenerationType.AUTO)
+private Long podStatID;
+private String id;
+private Long timeStamp;
+private Long counter;
+...
+\end{lstlisting}
+
+Series not annotated with @Entity as it is only a helper Entity we have also a contructor in order to initialize a new Array List.
+\begin{lstlisting}[language=Java]
+private String name;
+private List<SeriesItem> series;
+public Series(String name) {
+	super();
+	this.name = name;
+	this.series = new ArrayList<SeriesItem>();
+}
+...
+\end{lstlisting}
+
+SeriesImtem is the second helper class we are going to use and therefore as well not annotated with @Entity
+\begin{lstlisting}[language=Java]
+private Long name;
+private Long value;
+	
+public SeriesItem(Long name, Long value) {
+	super();
+	this.name = name;
+	this.value = value;
+}
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=Java]
+private String id;
+private Long counter;
+
+public Stat(String id, Long counter) {
+	super();
+	this.id = id;
+	this.counter = counter;
+}
+\end{lstlisting}
+
+Now we can implement the Repository (annotated with @Repository) as an interface which extends JpaRepository<PodStat, String>
+
+\begin{lstlisting}[language=Java]
+@Query("Select count(ps.id) from PodStat ps where ps.id = ?1")
+Long countUniqueId(String id);
+	
+@Query("Select distinct ps.id from PodStat ps")
+List<String> findUniqueIds();
+	
+@Query("Select ps from PodStat ps where ps.id = ?1")
+List<PodStat> findByIds(String id);
+\end{lstlisting}
+
+Now the last file is the most important one as there we will have all the business logig in it.
+
+We need to annotate it with @Service in order to make it available for Spring Boot to create a Bean out of it.
+
+
+\begin{lstlisting}[language=Java]
+@Autowired
+	PodStatRepository podStatRepository;
+
+	private Iterable<String> getAllIds() {
+		Iterable<String> source = podStatRepository.findUniqueIds();
+		return source;
+	}
+
+	public List<Stat> getAllPodStats() {
+
+		Iterable<String> source = getAllIds();
+
+		List<Stat> podStatistics = new ArrayList<Stat>();
+
+		source.forEach((id) -> {
+			podStatistics.add(new Stat(id, podStatRepository.countUniqueId(id)));
+		});
+
+		return podStatistics;
+
+	}
+	
+	
+	public List<Series> getPodHistory(){
+		
+		Iterable<PodStat> source = podStatRepository.findAll();
+		
+		Map<String, Series> podHistorys = new HashMap<>();
+		
+		source.forEach( (entry) -> {
+			
+			
+			if(podHistorys.get(entry.getId()) == null) {
+				
+				podHistorys.put(entry.getId(), new Series(entry.getId()));
+				
+			}
+			podHistorys.get(entry.getId())
+			.appendSeriesItem(new SeriesItem(entry.getTimeStamp(), entry.getCounter()));
+						
+			
+		});
+		
+		List<Series> plainSeries = new ArrayList<>();
+		
+		for(Map.Entry<String, Series> entry: podHistorys.entrySet()) {
+			
+			plainSeries.add(entry.getValue());
+			
+		}
+		
+		return plainSeries;
+		
+	}
+
+\end{lstlisting}

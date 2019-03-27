@@ -1,0 +1,157 @@
+The Middle Tier Application is created with Spring Initializer.
+Unter the following link \url{https://start.spring.io/} Helps to bootstrap very fast a simple Spring Boot application.
+In our case the fields should be filled out as followed:
+\begin{tabbing}
+\begin{tabular}{ll}
+Project & Maven Project \\
+Language & Java \\
+Spring Boot & 2.1.3 (All versions would apply) \\
+Group & ch.toky.randgen \\
+Artifact & middletier \\
+Name & MiddleTier \\
+Description & Middle Tier Service for Random Generator Application \\
+Packaging & Jar \\
+Java Version & 8 \\
+Dependencies & Web, JPA, MySQL, Rest Repositories
+\end{tabular}
+\end{tabbing}
+The Website will create a zip file to download. This zipfile has to be extracted to the desired Project folder.
+\dirtree{%
+.1 middletier.
+.2 Dockerfile.
+.2 mvnw.
+.2 mvnw.cmd.
+.2 pom.xml.
+.2 src.
+}
+all blue folders are already given. the Dockerfile still has to be created.
+
+Now inside of the Project create the following Project Structure and files.
+
+\dirtree{%
+.1 ch.toky.randgen.middletier.
+.2 MiddletierApplication.java.
+.2 ch.toky.rand-gen.middle-tier.model.
+.3 PodStat.java.
+.3 RandomNumber.java.
+.2 ch.toky.rand-gen.middle-tier.repository.
+.3 PodStatRepository.java.
+}
+The file MiddleTierApplication.java should already be in place. as Spring Boot Initializr created this with the complete Folder structure. the packages controller, model and repository need to be created.
+Inside of controller, A file named MiddletierController.java needs to be created with the following content.
+
+Within the model package two new Files have to be created: PodStat.java and RandomNumber.java.
+
+PodStat is an Entity and therefore the class has to be annotated with @Entity.
+It contents the following fields with their respective getter and Setter Methods.
+\begin{lstlisting}[language=Java]
+@Id
+@GeneratedValue(strategy=GenerationType.AUTO)
+private Long podStatID;
+private String id;
+private Long timeStamp;
+private Long counter;
+\end{lstlisting}
+
+The class RandomNumber is only a DTO which is retreived from the random generator Service. Therefore there is no need for a annotation.
+Only the following Fields needs to be declared with their getters and setters:
+
+\begin{lstlisting}[language=Java]
+private String id;
+private Long randNumber;
+\end{lstlisting}
+
+In the repository package the file PodStatRepository.java will be created.
+As this java file is not a class but an interface it needs to be changed to interface and extends JpaRepository<PodStat, Long>
+and it will be annotated with @Repository
+
+Now those two methods are created 
+\begin{lstlisting}[language=Java]
+@Query("Select count(ps.id) from PodStat ps where ps.id = ?1")
+Long countUniqueId(String id);
+
+@Query("Select count(ps.id) from PodStat ps")
+Long findMaxCount();
+\end{lstlisting}
+
+Witin the controller all the endpoints are declared. Therfore it will be annotaded with @RestController
+
+Those fields are needed within the controller and are therefore declared first.
+\begin{lstlisting}[language=Java]
+@Autowired
+private ObjectMapper objectMapper;
+@Autowired
+private PodStatRepository podStatRepository;
+private Map<String, String> env = System.getenv();
+\end{lstlisting}
+As there should not be any hardcoded url according to the 12 Factor application \footnote{Accessible at \url{https://12factor.net/}}, the Url will be retreived through a System Variable.
+
+Now a controller Method with the business logic can be declared:
+\begin{lstlisting}[language=Java]
+@RequestMapping(value = "/", produces = "application/json")
+public RandomNumber getRandom() {
+
+    RandomNumber randNum = getNewRandomNumber();
+    Long maxCountId = podStatRepository.countUniqueId(randNum.getId());
+    Long maxCountOverall = podStatRepository.findMaxCount();
+    PodStat tmpPod = new PodStat();
+    tmpPod.setId(randNum.getId());
+    tmpPod.setTimeStamp(maxCountOverall+1);
+    tmpPod.setCounter(maxCountId +1);
+    podStatRepository.save(tmpPod);
+
+    return randNum;
+
+}
+\end{lstlisting}
+The above Method listens on the path / and returns the Random number after saving it to the database with the actual count.
+
+Now the last Method is used to retreive the Random Number from the Random Generator Service.
+\begin{lstlisting}[language=Java]
+private RandomNumber getNewRandomNumber() {
+
+    String randGenUrl=env.get("RANDOM_GENERATOR_URL");
+    String URL = randGenUrl;
+    RestTemplate restTemplate = new RestTemplate();
+
+    return   restTemplate.getForObject(URL, RandomNumber.class);
+
+}
+\end{lstlisting}
+Above Source code contains the Controller and the Service, which should be separated optimally.
+Next two files represents POJOs which are going to be used from controller and provided by Repositories.
+
+The last thing which needs to be done for the Middle Tier Service is to setup the default values for the Database Connection.
+\begin{lstlisting}
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.username=random_user
+spring.datasource.password=random_password
+spring.datasource.url=jdbc:mysql://localhost:3306/rand_numbers
+\end{lstlisting}
+The datasource configurations are going to be overwritten by Environment Variables once they run inside of a Docker Container.
+
+\begin{lstlisting}
+FROM anapsix/alpine-java:latest
+
+ADD target/middletier-0.0.1-SNAPSHOT.jar /opt/middle-tier.jar
+
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://rand-gen-database/rand_numbers
+
+ENV SPRING_DATASOURCE_USERNAME=random_user
+
+ENV SPRING_DATASOURCE_PASSWORD=random_password
+
+ENV RAND_GEN_URL=rand-gen-app
+
+CMD java -jar /opt/middle-tier.jar
+
+\end{lstlisting}
+We are using anapsix base image, as we want to keep the Docker image as small as possible.
+
+Finally we can create the docker image with the following Command.
+
+Important is, we need to be in the root directory of the Projecct where also the Dockerfile is stored.
+\begin{lstlisting}[language=Bash]
+docker build -t middle-tier .
+\end{lstlisting}
+the flag -t inicates that the name of the image and the dot at the end tells docker to use the Dockerfile from the current working directory.
