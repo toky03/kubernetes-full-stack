@@ -88,6 +88,10 @@ public Series(String name) {
 	this.series = new ArrayList<SeriesItem>();
 }
 ...
+
+public void appendSeries(SeriesItem seriesItem){
+    this.series.add(seriesItem);
+}
 \end{lstlisting}
 
 SeriesImtem is the second helper class we are going to use and therefore as well not annotated with @Entity
@@ -163,10 +167,7 @@ public List<Series> getPodHistory(){
 		.appendSeriesItem(new SeriesItem(entry.getTimeStamp(), entry.getCounter()));							
 	});
 		
-	List<Series> plainSeries = new ArrayList<>();	
-	for(Map.Entry<String, Series> entry: podHistorys.entrySet()) {			
-	    plainSeries.add(entry.getValue());	
-	}
+	List<Series> plainSeries = new ArrayList<>(podHistorys.values());
 	return plainSeries;	
 }
 \end{lstlisting}

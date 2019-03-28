@@ -26,4 +26,6 @@ public class SeriesItem {
     public void setValue(Long value) {
         this.value = value;
     }
+
+
 }

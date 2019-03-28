@@ -28,4 +28,8 @@ public class Series {
     public void setSeries(List<SeriesItem> series) {
         this.series = series;
     }
+
+    public void appendSeriesItem(SeriesItem seriesItem){
+        this.series.add(seriesItem);
+    }
 }

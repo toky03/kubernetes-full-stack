@@ -2,6 +2,7 @@ package ch.toky.randgen.statservice.controller;
 
 import ch.toky.randgen.statservice.model.Series;
 import ch.toky.randgen.statservice.model.Stat;
+import ch.toky.randgen.statservice.service.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

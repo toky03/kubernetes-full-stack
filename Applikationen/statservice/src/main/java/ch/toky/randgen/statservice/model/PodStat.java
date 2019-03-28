@@ -12,7 +12,7 @@ public class PodStat {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long podStatID;
     private String id;
-    private Long timestamp;
+    private Long timeStamp;
     private Long counter;
 
     public Long getPodStatID() {
@@ -32,11 +32,11 @@ public class PodStat {
     }
 
     public Long getTimestamp() {
-        return timestamp;
+        return timeStamp;
     }
 
     public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+        this.timeStamp = timestamp;
     }
 
     public Long getCounter() {
