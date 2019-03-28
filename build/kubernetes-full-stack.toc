@@ -7,6 +7,6 @@
 \contentsline {subsection}{\numberline {3.2}Random Generator}{4}{subsection.3.2}
 \contentsline {subsection}{\numberline {3.3}Middle Tier}{5}{subsection.3.3}
 \contentsline {subsection}{\numberline {3.4}Statistic Service}{8}{subsection.3.4}
-\contentsline {subsection}{\numberline {3.5}Frontend}{8}{subsection.3.5}
-\contentsline {subsection}{\numberline {3.6}running with Docker}{8}{subsection.3.6}
-\contentsline {section}{\numberline {4}Deploy Services to Kubernetes}{9}{section.4}
+\contentsline {subsection}{\numberline {3.5}Frontend}{11}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}running with Docker}{11}{subsection.3.6}
+\contentsline {section}{\numberline {4}Deploy Services to Kubernetes}{12}{section.4}

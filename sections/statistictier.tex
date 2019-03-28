@@ -134,58 +134,58 @@ We need to annotate it with @Service in order to make it available for Spring Bo
 
 \begin{lstlisting}[language=Java]
 @Autowired
-	PodStatRepository podStatRepository;
+PodStatRepository podStatRepository;
 
-	private Iterable<String> getAllIds() {
-		Iterable<String> source = podStatRepository.findUniqueIds();
-		return source;
-	}
+private Iterable<String> getAllIds() {
+	Iterable<String> source = podStatRepository.findUniqueIds();
+	return source;
+}
 
-	public List<Stat> getAllPodStats() {
+public List<Stat> getAllPodStats() {
 
-		Iterable<String> source = getAllIds();
-
-		List<Stat> podStatistics = new ArrayList<Stat>();
-
-		source.forEach((id) -> {
-			podStatistics.add(new Stat(id, podStatRepository.countUniqueId(id)));
-		});
-
-		return podStatistics;
-
-	}
+	Iterable<String> source = getAllIds();
+	List<Stat> podStatistics = new ArrayList<Stat>();
+	source.forEach((id) -> {
+		podStatistics.add(new Stat(id, podStatRepository.countUniqueId(id)));
+	});
+	return podStatistics;
+}
 	
-	
-	public List<Series> getPodHistory(){
+public List<Series> getPodHistory(){
 		
-		Iterable<PodStat> source = podStatRepository.findAll();
-		
-		Map<String, Series> podHistorys = new HashMap<>();
-		
-		source.forEach( (entry) -> {
-			
-			
-			if(podHistorys.get(entry.getId()) == null) {
-				
-				podHistorys.put(entry.getId(), new Series(entry.getId()));
-				
-			}
-			podHistorys.get(entry.getId())
-			.appendSeriesItem(new SeriesItem(entry.getTimeStamp(), entry.getCounter()));
-						
-			
-		});
-		
-		List<Series> plainSeries = new ArrayList<>();
-		
-		for(Map.Entry<String, Series> entry: podHistorys.entrySet()) {
-			
-			plainSeries.add(entry.getValue());
-			
+	Iterable<PodStat> source = podStatRepository.findAll();	
+	Map<String, Series> podHistorys = new HashMap<>();	
+	source.forEach( (entry) -> {				
+		if(podHistorys.get(entry.getId()) == null) {			
+			podHistorys.put(entry.getId(), new Series(entry.getId()));			
 		}
+		podHistorys.get(entry.getId())
+		.appendSeriesItem(new SeriesItem(entry.getTimeStamp(), entry.getCounter()));							
+	});
 		
-		return plainSeries;
-		
+	List<Series> plainSeries = new ArrayList<>();	
+	for(Map.Entry<String, Series> entry: podHistorys.entrySet()) {			
+	    plainSeries.add(entry.getValue());	
 	}
+	return plainSeries;	
+}
+\end{lstlisting}
+
+Now that all the java fils are created we can also create the Dockerfile for this Service.
+
+\begin{lstlisting}
+FROM anapsix/alpine-java:latest
+
+ADD target/statservice-0.0.1-SNAPSHOT.jar /opt/stat-tier.jar
+
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://rand-gen-database/rand_numbers
+
+ENV SPRING_DATASOURCE_USERNAME=random_user
+
+ENV SPRING_DATASOURCE_PASSWORD=random_password
+
+CMD java -jar /opt/stat-tier.jar
 
 \end{lstlisting}
+
+Basically the Dockerfile for this Service looks pretty much the same as the one for the Middle tier except that we do not need to declare an environment variable for the random generator.
