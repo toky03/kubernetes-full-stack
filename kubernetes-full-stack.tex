@@ -50,12 +50,21 @@
 This Introduction should give an end to end overview to deploy a sample Application with multiple Services and a Databases completely on Kubernetes.
 The Application generates Random Numbers, saves them with a Timestamp on a database. Displays the new Number on a Frontend and also shows Graphs from previous Random Numbers based on their Producers Id.
 The Goal of the whole application is first to create an end to end Application fully Cloud native which runs as well locally without any changes. The second goal is to show graphically the self healing process of Kubernetes, namely when we delete a random generator Pod, it should automatically create a new Random generator Pod with a new Id.
+\section{Prerequisites}
+To create the application it is assumed that we already have a machine with the following Software running:
+\begin{itemize}
+\item Java Development Kit (minimum 1.8)
+\item Maven build tool
+\item Python 3.6
+\item Docker
+\item Angular (minimum version 6) with the ng command
+\end{itemize}
 \input{sections/introduction.tex}
-\section{Installing Kubernetes}
+
 
 \section{Create Services}
 \input{sections/services.tex}
-
+\section{Installing Kubernetes}
 \section{Deploy Services to Kubernetes}
 
 \end{document}

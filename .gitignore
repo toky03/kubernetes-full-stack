@@ -12,3 +12,5 @@ Applications/
 *.tar
 *.rar
 
+Applikationen/frontend/node_modules/
+
