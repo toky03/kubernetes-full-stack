@@ -15,3 +15,28 @@ Java Version & 8 \\
 Dependencies & Web, Rest Repositories
 \end{tabular}
 \end{tabbing}
+
+As we now only have the controller part of our User interface with the Spring boot application, we now need to create the Angular part.
+
+therefore we create a new Project directly with Angular CLI within the folder where all the other Projects are stored.
+
+\begin{lstlisting}[language=Bash]
+ng new ui-frontend
+\end{lstlisting}
+
+Now we can try if the project has been set up correctly with navigating to the new project folder and hit ng serve.
+Once the server is ready we should be able to access localhost:4200 and see a sample home page made by angular cli.
+
+As the frontend should be only one singe application we will now move all folders into the Spring boot application.
+
+in the Folder where all Projects are stored we execute those commands.
+\begin{lstlisting}[language=Bash]
+mv ui-frontend/src/* frontend/src/
+rm -rf ui-frontend/src/
+mv ui-frontend/* frontend/
+rm -rf ui-frontend
+\end{lstlisting}
+
+In order to serve all the Frontend files from the Spring Boot application we need to tell angular to save all compiled files into the target/classes/static folder.
+Therefore we need to change the output path option in the file angular.json
+
