@@ -37,6 +37,114 @@ mv ui-frontend/* frontend/
 rm -rf ui-frontend
 \end{lstlisting}
 
+
+
+to install all dependent libraries for 
+
 In order to serve all the Frontend files from the Spring Boot application we need to tell angular to save all compiled files into the target/classes/static folder.
 Therefore we need to change the output path option in the file angular.json
+\begin{lstlisting}[language=Java]
+...
+    "outputPath": "target/classes/static",
+    ...
+\end{lstlisting}
 
+Now every time the Angular Project is built it will be compiled directly to the path where spring boot serves static files.
+When we now start the spring boot application we will get the Angular Project under the root path /.
+
+Now we are going to modify the Angular Project itself.
+
+First we create all interfaces with the following commands.
+\begin{lstlisting}[language=Bash]
+ng generate interface models/randomNumber
+ng generate interface models/seriesItem
+ng generate interface models/series
+ng generate interface models/podStatistic
+\end{lstlisting}
+
+Interface RandomNumber
+id: string;
+randNumber: number;
+
+Interface PodStatistic
+id: string;
+counter: number;
+
+Interface SeriesItem
+name: number;
+value: number;
+
+Interface Series
+name: string;
+series: SeriesItem;
+
+
+\begin{lstlisting}[language=Bash]
+ng generate service statistic
+ng generate service fetch-number
+\end{lstlisting}
+this created 4 new files for us two typescript and two spec.ts files which would be needed for the end to end tests.
+
+Both Services also need to be declared in the provders array from app.module.ts if not yet done.
+
+We will now modify first the fetch-number service
+
+withing the Constructor argument field we pass a HttpClient.
+private _http: HttpClient
+
+Therefore you need to make sure to implement the following Line.
+import { HttpClient } from '@angular/common/http';
+
+\begin{lstlisting}[language=Java]
+getRandomNumber(): Observable<RandomNumber>{
+    return this._http.get<RandomNumber>('randomNumber');
+}
+\end{lstlisting}
+
+In the Statistic Service File we declare the same HttpClient to be passed to the constructor.
+private _http: HttpClient
+
+Then the following methods are going to be declared:
+\begin{lstlisting}[language=Java]
+getStatistics(): Observable<PodStatistic[]>{
+
+  return this._http.get<PodStatistic[]>('statistics');
+}
+
+getHistory(): Observable<Series[]>{
+
+  return this._http.get<Series[]>('history');
+}
+\end{lstlisting}
+
+As we are using Material design, we now create a seperate Module to manage all depedencies for Material design.
+
+\begin{lstlisting}[language=Bash]
+ng generate module material
+\end{lstlisting}
+Within the newly created material.module.ts file we add the following Modules to imports and exports array.
+    MatButtonModule,
+    MatCheckboxModule,
+    MatCardModule,
+    MatTableModule
+
+In order to be able to use our newly created Material Module within our app, we need to add it to the import array from app.module.ts along with all the following imports.
+	MaterialModule,
+    HttpClientModule,
+    NgxChartsModule,
+    BrowserAnimationsModule
+   
+By now we cannot import all the declared Module Dependencies. this is because we use a lot of external libraries which we now have to install via npm.
+
+in order to use Angular Material \footnote{Find documentation via following link \url{https://material.angular.io/guide/getting-started}}
+\begin{lstlisting}[language=Bash]
+npm install --save @angular/material @angular/cdk @angular/animations 
+\end{lstlisting}
+
+We wil use Ngx-Charts Module to display the statistics as a graph.
+\footnote{Documentation can be found here \url{https://pixinvent.com/apex-angular-4-bootstrap-admin-template/documentation/documentation-charts-ngx.html}}
+
+and we install the module with the following command.
+\begin{lstlisting}[language=Bash]
+npm install @swimlane/ngx-charts --save
+\end{lstlisting}
