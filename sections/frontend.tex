@@ -63,21 +63,37 @@ ng generate interface models/podStatistic
 \end{lstlisting}
 
 Interface RandomNumber
+\begin{lstlisting}[language=Java]
 id: string;
 randNumber: number;
+\end{lstlisting}
 
 Interface PodStatistic
+\begin{lstlisting}[language=Java]
 id: string;
 counter: number;
+\end{lstlisting}
 
 Interface SeriesItem
+\begin{lstlisting}[language=Java]
 name: number;
 value: number;
+\end{lstlisting}
 
 Interface Series
+\begin{lstlisting}[language=Java]
 name: string;
 series: SeriesItem;
+\end{lstlisting}
 
+In order to have some empty Objects we also need to declare the following Classes within the folder implementation.
+
+\begin{lstlisting}[language=Bash]
+ng generate class RandNumberImpl
+ng generate class PodStatisticImpl
+\end{lstlisting}
+within those classes we define all Strings as empty Strings and all numbers as 0 and all Arrays as empty Arrays [].
+this prevents us from getting an error from the Html due to an undefined object.
 
 \begin{lstlisting}[language=Bash]
 ng generate service statistic
@@ -90,10 +106,14 @@ Both Services also need to be declared in the provders array from app.module.ts 
 We will now modify first the fetch-number service
 
 withing the Constructor argument field we pass a HttpClient.
+\begin{lstlisting}[language=Java]
 private _http: HttpClient
+\end{lstlisting}
 
 Therefore you need to make sure to implement the following Line.
+\begin{lstlisting}[language=Java]
 import { HttpClient } from '@angular/common/http';
+\end{lstlisting}
 
 \begin{lstlisting}[language=Java]
 getRandomNumber(): Observable<RandomNumber>{
@@ -102,7 +122,9 @@ getRandomNumber(): Observable<RandomNumber>{
 \end{lstlisting}
 
 In the Statistic Service File we declare the same HttpClient to be passed to the constructor.
+\begin{lstlisting}[language=Java]
 private _http: HttpClient
+\end{lstlisting}
 
 Then the following methods are going to be declared:
 \begin{lstlisting}[language=Java]
@@ -129,10 +151,12 @@ Within the newly created material.module.ts file we add the following Modules to
     MatTableModule
 
 In order to be able to use our newly created Material Module within our app, we need to add it to the import array from app.module.ts along with all the following imports.
+\begin{lstlisting}[language=Java]
 	MaterialModule,
     HttpClientModule,
     NgxChartsModule,
     BrowserAnimationsModule
+\end{lstlisting}
    
 By now we cannot import all the declared Module Dependencies. this is because we use a lot of external libraries which we now have to install via npm.
 
@@ -147,4 +171,128 @@ We wil use Ngx-Charts Module to display the statistics as a graph.
 and we install the module with the following command.
 \begin{lstlisting}[language=Bash]
 npm install @swimlane/ngx-charts --save
+\end{lstlisting}
+
+Now we can start creating the logig within the Main Component.
+first we declatre the Variables which we are going to use.
+\begin{lstlisting}[language=Java]
+randomNumber: RandomNumber = new RandNumberImpl();
+statistics: PodStatistic[] = [new PodStatisticImpl()];
+multi: ISeries[];
+\end{lstlisting}
+
+In the constructor, we provide our two Services as Private.
+
+next we create the Methods which fetches the data from the service.
+\begin{lstlisting}[language=Java]
+getNewNumber(){
+  this.random_service.getRandomNumber()
+  .subscribe(
+    data => {this.randomNumber = data;});
+}
+  
+getStatistics(){
+  this.statistic_service.getStatistics()
+  .subscribe(
+     data => {
+     this.dataSource = new MatTableDataSource<PodStatistic>(data);});
+}
+
+getHistory(){
+  this.statistic_service.getHistory()
+  .subscribe(
+    data =>{this.multi = data;});
+}
+\end{lstlisting}
+
+We also need to define a method Called "ButtonClick" as we want to use it from the Html file. within this Method we will do nothing more that just calling all fetch methods.
+\begin{lstlisting}[language=Java]
+buttonClick(){
+    this.getNewNumber();
+    this.getStatistics();
+    this.getHistory();
+}
+\end{lstlisting}
+
+from within ngOnInit we call only buttonClick().
+
+As a last thing in this file we need to add some configuration Variables.
+\begin{lstlisting}[language=Java]
+// Table
+displayedColumns: string[] = ['id','counter'];
+dataSource: any;
+
+// Graph
+view: any[] = [700, 400];
+showXAxis = true;
+showYAxis = true;
+gradient = false;
+showLegend = true;
+showXAxisLabel = true;
+xAxisLabel = 'Sum of all Calls';
+showYAxisLabel = true;
+yAxisLabel = 'Calls per Pod';
+timeline = true;
+colorScheme = {
+ domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+};
+\end{lstlisting}
+
+the Last file we need to create for the Frontend is the HTML from our component Class.
+\begin{lstlisting}[language=HTML]
+<section class="mat-typography">
+
+<h1>Random Numbers</h1>
+
+<mat-card>
+  <mat-card-header>
+      <p>Id: {{randomNumber.id}}</p>
+  </mat-card-header>
+  <mat-card-content>
+      <p>Number: {{randomNumber.randNumber}}</p>
+  </mat-card-content>
+
+</mat-card>
+
+  <button mat-button (click)="buttonClick()">Get New Number</button>
+
+<mat-card>
+  <mat-card-header>
+    Statistics Table
+  </mat-card-header>
+  <mat-card-content >
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let element">{{element.id}}</td>
+      </ng-container>
+      <ng-container matColumnDef="counter">
+        <th mat-header-cell *matHeaderCellDef>Counter</th>
+        <td mat-cell *matCellDef="let element">{{element.counter}}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
+
+    <ngx-charts-line-chart 
+    [view]="view"
+    [scheme]="colorScheme"
+    [results]="multi"
+    [gradient]="gradient"
+    [xAxis]="showXAxis"
+    [yAxis]="showYAxis"
+    [legend]="showLegend"
+    [showXAxisLabel]="showXAxisLabel"
+    [showYAxisLabel]="showYAxisLabel"
+    [xAxisLabel]="xAxisLabel"
+    [yAxisLabel]="yAxisLabel"
+    [autoScale]="autoScale"
+    [timeline]="timeline"
+    (select)="onSelect($event)">
+    ></ngx-charts-line-chart>
+
+
+</section>
 \end{lstlisting}
