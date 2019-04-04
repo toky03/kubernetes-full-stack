@@ -10,9 +10,9 @@ RUN npm run ng build -- --prod
 
 FROM maven:3.5-jdk-8 AS builder
 
-COPY --from=frontbuilder /pom.xml /app/pom.xml
+COPY --from=frontbuilder app/pom.xml /app/pom.xml
 
-COPY --from=frontbuilder /src /app/src
+COPY --from=frontbuilder app/src /app/src
 
 RUN mvn -f /app/pom.xml  package -DskipTests
 
@@ -20,13 +20,12 @@ FROM anapsix/alpine-java:latest
 
 COPY --from=builder /app/target/middletier-0.0.1-SNAPSHOT.jar /opt/middle-tier.jar
 
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://rand-gen-database/rand_numbers
 
-ENV SPRING_DATASOURCE_USERNAME=random_user
+ENV STAT_URL=http://stat-tier:8080/
 
-ENV SPRING_DATASOURCE_PASSWORD=random_password
+ENV RAND_NUM_URL=http://middle-tier:8080/
 
-ENV RANDOM_GENERATOR_URL=rand-gen-app
+ENV HISTORY_URL=http://stat-tier:8080/history
 
 CMD java -jar /opt/middle-tier.jar
 
