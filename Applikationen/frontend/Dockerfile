@@ -1,9 +1,19 @@
+FROM node:10-alpine as frontbuilder
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+RUN npm run ng build -- --prod
+
 FROM maven:3.5-jdk-8 AS builder
 
-COPY ./pom.xml /app/pom.xml
+COPY --from=frontbuilder /pom.xml /app/pom.xml
 
-COPY ./src /app/src
-ADD ~/.m2 /root/.m2 
+COPY --from=frontbuilder /src /app/src
+
 RUN mvn -f /app/pom.xml  package -DskipTests
 
 FROM anapsix/alpine-java:latest

@@ -130,22 +130,8 @@ spring.datasource.url=jdbc:mysql://localhost:3306/rand_numbers
 \end{lstlisting}
 The datasource configurations are going to be overwritten by Environment Variables once they run inside of a Docker Container.
 
-\begin{lstlisting}
-FROM anapsix/alpine-java:latest
+\lstinputlisting[language=Bash]{Applikationen/middletier/Dockerfile}
 
-ADD target/middletier-0.0.1-SNAPSHOT.jar /opt/middle-tier.jar
-
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://rand-gen-database/rand_numbers
-
-ENV SPRING_DATASOURCE_USERNAME=random_user
-
-ENV SPRING_DATASOURCE_PASSWORD=random_password
-
-ENV RAND_GEN_URL=rand-gen-app
-
-CMD java -jar /opt/middle-tier.jar
-
-\end{lstlisting}
 We are using anapsix base image, as we want to keep the Docker image as small as possible.
 
 Finally we can create the docker image with the following Command.
@@ -154,4 +140,14 @@ Important is, we need to be in the root directory of the Projecct where also the
 \begin{lstlisting}[language=Bash]
 docker build -t middle-tier .
 \end{lstlisting}
+
+Reference for using maven with Docker \url{https://hub.docker.com/_/maven/}
+
+For the image itself we are using anapsix base image as this is currently the smallest possible java base image \url{https://hub.docker.com/r/anapsix/alpine-java/dockerfile/}
+
+
+There is one huge disadvantage. As every docker Container has its own environment and we cannot mount a hostpath during the build, we need to download all the dependencies for each build which takes quite some time.
+
+There are also other options to tackle this for example with the spotify maven plugin \footnote{Spotify Maven Plugin \url{https://github.com/spotify/docker-maven-plugin}}. Which would provide a new command for maven to build the dockerfile along with building the jar file. But as this Tutorial should give an intro with plain docker witout any additional plugins. We decided to do it with a multi stage build.
+
 the flag -t inicates that the name of the image and the dot at the end tells docker to use the Dockerfile from the current working directory.

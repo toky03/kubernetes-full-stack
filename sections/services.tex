@@ -18,23 +18,7 @@ GRANT ALL PRIVILEGES ON *.db_example TO 'springuser'@'localhost';
 With this, the Database is ready to used by the Random Generator Example from localhost.
 
 \subsection{Random Generator}
-The Random Generator will be a verry simple Python App which has an unique Id per Service instance. It will return his id and a new Random Number. For this application we create a folder called RandGen with the following Structure.
-
-\dirtree{%
-.1 RandGen.
-.2 Dockerfile.
-.2 rand\_gen.py.
-.2 requirements.txt.
-}
-The Dockerfile is needed to create the Docker Image which will be used from Kubernetes to Create the Random Generator Service.
-rand\_gen.py is the complete Random Generator Python application based on Flask\footnote{More information about Flask can be found on the official Homepage \url{http://flask.pocoo.org/}}.
- \lstinputlisting[language=Python]{Applications/RandGen/rand_gen.py}
-In requirements.txt are the Python packages specified. In this case it is flask. therefore this file contains only one line which is
-\begin{verbatim}
-Flask==1.0.2
-\end{verbatim}
-
-The Dockerfile to create the Docker image:
+\input{sections/random_generator.tex}
 
 
 \subsection{Middle Tier}
@@ -47,6 +31,22 @@ The Dockerfile to create the Docker image:
 
 \subsection{Frontend}
 \input{sections/frontend.tex}
+
+\subsection{Creating the Docker Images}
+As we were always using multi stage builds we are now able to build the Project directly with Docker without any manual execution of some maven build commands or angular build commands.
+It is mostly important for the build from our Frontend, as we do not need to run ng build and after that mvn clean package.
+With this we can also always be sure to have the latest version of the jar file, as we are building the jar together with the Docker Image.
+
+\textbf{Create Random Generator}
+within the root directory of the Random Generator.
+\begin{lstlisting}[language=Bash]
+docker build -t rand-gen-image
+\end{lstlisting}
+
+\begin{lstlisting}[language=Bash]
+docker build -t rand-gen-image
+\end{lstlisting}
+
 
 \subsection{running with Docker}
 

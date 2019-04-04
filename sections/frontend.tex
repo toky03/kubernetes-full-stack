@@ -92,8 +92,9 @@ In order to have some empty Objects we also need to declare the following Classe
 ng generate class RandNumberImpl
 ng generate class PodStatisticImpl
 \end{lstlisting}
-within those classes we define all Strings as empty Strings and all numbers as 0 and all Arrays as empty Arrays [].
-this prevents us from getting an error from the Html due to an undefined object.
+Where RandomNumberImpl implements RandomNumber and PodStatisticImpl implements PodStatistic
+Within those classes we define all Strings as empty Strings and all numbers as 0.
+This prevents us from getting an error from the Html due to an undefined object.
 
 \begin{lstlisting}[language=Bash]
 ng generate service statistic
@@ -178,7 +179,7 @@ first we declatre the Variables which we are going to use.
 \begin{lstlisting}[language=Java]
 randomNumber: RandomNumber = new RandNumberImpl();
 statistics: PodStatistic[] = [new PodStatisticImpl()];
-multi: ISeries[];
+multi: Series[];
 \end{lstlisting}
 
 In the constructor, we provide our two Services as Private.
@@ -296,3 +297,113 @@ the Last file we need to create for the Frontend is the HTML from our component 
 
 </section>
 \end{lstlisting}
+
+As next thing we can finally go through the Server side Part of the Frontend, which is from our Spring Boot Part.
+Like we did it for all the previous Spring boot Applications, we will first create all folders and .java files.
+From within src/main/java
+\dirtree{%
+.1 ch.toky.randgen.frontend.
+.2 FrontendApplication.java.
+.2 ch.toky.randgen.frontend.model.
+.3 PodStat.java.
+.3 RandomNumber.java.
+.3 Series.java.
+.3 SeriesItem.java.
+.2 ch.toky.randgen.frontend.service.
+.3 RestService.java.
+}
+All classes under the Model Package, represent our DTOs like we had it for all the previous services.
+
+Fields from PodStat:
+\begin{lstlisting}[language=Java]
+private Long podStatID;
+private String id;
+private Long timeStamp;
+private Long counter;
+\end{lstlisting}
+
+Fields from RandomNumber:
+\begin{lstlisting}[language=Java]
+private String id;
+private Long randNumber;
+\end{lstlisting}
+
+Series:
+\begin{lstlisting}[language=Java]
+private String name;
+private List<SeriesItem> series;
+\end{lstlisting}
+
+SeriesItem:
+\begin{lstlisting}[language=Java]
+private Long name;
+private Long value;
+\end{lstlisting}
+
+All fields of above classes must have as well their coresponsive getter and setter methods.
+
+To fetch all the Data we need to declare in the file RestService.java all the methods which communicate to the Statistic Service and to the Middle Tier Service.
+
+As we want to inject this Service within the Main Application we need to annotate this Class with @Service.
+
+Fields from RestService:
+\begin{lstlisting}[language=Java]
+private Map<String, String> env = System.getenv();
+private final String statURL = env.get("STAT_URL");
+private final String randNumURL = env.get("RAND_NUM_URL");
+private final String historyURL = env.get("HISTORY_URL");
+private RestTemplate restTemplate = new RestTemplate();
+\end{lstlisting}
+As one can see, we will retreive all endpoints via environment Variables which are either declared directly within the docker Container or via Kubernetes Environment Variable Configuration.
+
+Now we declare the methods.
+\begin{lstlisting}[language=Java]
+public List<PodStat> getStatistics() {
+	PodStat[] tmpStats = restTemplate.getForObject(statURL, PodStat[].class);
+	return Arrays.asList(tmpStats);
+}
+
+public RandomNumber getRandomNumber() {
+	return restTemplate.getForObject(randNumURL, RandomNumber.class);
+}
+
+public List<Series> getHistory() {
+	Series[] series = restTemplate.getForObject(historyURL, Series[].class);
+	return Arrays.asList(series);
+}
+\end{lstlisting}
+
+With this we are finished with the Rest Service File.
+
+Within the Main Application file FrontendApplication.java we will also declare our endpoints we provide to the Angular application. Therefore we need to add the @RestController annotation besides the @SpringBootApplication which should already be in place.
+
+We need one dependency which we need to inject with @Autowired and this is our previously declared RestService;
+\begin{lstlisting}[language=Java]
+@Autowired
+private RestService restService;
+\end{lstlisting}
+
+The last thing we need to do is to declare all the endpoint Methods.
+\begin{lstlisting}[language=Java]
+@GetMapping("/statistics")
+public List<PodStat> getStatistics(){	
+	return restService.getStatistics();
+}
+
+@GetMapping("/randomNumber")
+public RandomNumber getRandomNumber(){
+	return restService.getRandomNumber();
+}
+
+@GetMapping("/history")
+public List<Series> getHistory(){
+	return restService.getHistory();
+}
+\end{lstlisting}
+
+Within the root directory of the project we can place the Docker file like we did it for all the other services. Except that we now have to add another stage for the angular build.
+
+\lstinputlisting[language=Bash]{Applikationen/frontend/Dockerfile}
+
+
+
