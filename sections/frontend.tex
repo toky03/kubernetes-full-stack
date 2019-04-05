@@ -166,8 +166,9 @@ in order to use Angular Material \footnote{Find documentation via following link
 npm install --save @angular/material @angular/cdk @angular/animations 
 \end{lstlisting}
 
+
 We wil use Ngx-Charts Module to display the statistics as a graph.
-\footnote{Documentation can be found here \url{https://pixinvent.com/apex-angular-4-bootstrap-admin-template/documentation/documentation-charts-ngx.html}}
+\footnote{Documentation can be found here \url{https://swimlane.gitbook.io/ngx-charts/}}
 
 and we install the module with the following command.
 \begin{lstlisting}[language=Bash]
@@ -217,6 +218,12 @@ buttonClick(){
 
 from within ngOnInit we call only buttonClick().
 
+\begin{lstlisting}[language=Java]
+onSelect(event) {
+  console.log(event);
+}
+\end{lstlisting}
+
 As a last thing in this file we need to add some configuration Variables.
 \begin{lstlisting}[language=Java]
 // Table
@@ -234,6 +241,7 @@ xAxisLabel = 'Sum of all Calls';
 showYAxisLabel = true;
 yAxisLabel = 'Calls per Pod';
 timeline = true;
+autoScale = true;
 colorScheme = {
  domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
 };
@@ -403,7 +411,7 @@ public List<Series> getHistory(){
 
 Within the root directory of the project we can place the Docker file like we did it for all the other services. Except that we now have to add another stage for the angular build.
 
-\lstinputlisting[language=Bash]{Applikationen/frontend/Dockerfile}
+
 
 
 

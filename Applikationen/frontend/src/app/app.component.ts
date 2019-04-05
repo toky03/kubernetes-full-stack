@@ -18,7 +18,7 @@ export class AppComponent {
 
   randomNumber: RandomNumber = new RandNumberImpl();
   statistics: PodStatistic[] = [new PodStatisticImpl()];
-  datasource: any;
+  dataSource: any;
   multi: Series[];
 
   displayedColumns: string [] = ['id', 'counter'];
@@ -34,6 +34,7 @@ export class AppComponent {
   showYAxisLabel = true;
   yAxisLabel = 'Calls per Pod';
   timeline = true;
+  autoScale = true;
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
@@ -54,7 +55,7 @@ export class AppComponent {
       this.statisticService.getStatistics()
       .subscribe(
         data =>{ 
-          this.datasource = new MatTableDataSource<PodStatistic>(data);});
+          this.dataSource = new MatTableDataSource<PodStatistic>(data);});
     }
 
     getHistory(){
@@ -71,6 +72,10 @@ export class AppComponent {
 
     ngOnInit(){
       this.buttonClick();
+    }
+
+    onSelect(event) {
+      console.log(event);
     }
 
 }

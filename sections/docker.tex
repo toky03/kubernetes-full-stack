@@ -1,0 +1,116 @@
+\subsection{Creating the Docker Images}
+As we were always using multi stage builds we are now able to build the Project directly with Docker without any manual execution of some maven build commands or angular build commands.
+It is mostly important for the build from our Frontend, as we do not need to run ng build and after that mvn clean package.
+With this we can also always be sure to have the latest version of the jar file, as we are building the jar together with the Docker Image.
+
+There is one huge disadvantage. As every docker Container has its own environment and we cannot mount a hostpath during the build, we need to download all the dependencies for each build which takes quite some time.
+
+As our builds will run every time in a new Container, it needs to load all dependencies each time we are going to build the Project. This takes a lot of time and there are pluginswhich makes this much easier.
+For example the spotify docker Maven plugin which would enable us to build the Dockerfile directly with maven \footnote{https://github.com/spotify/docker-maven-plugin}.
+There is also a maven plugin to execute the angular build before building the jar file \footnote{https://github.com/eirslett/frontend-maven-plugin}.
+All of them can make our life easier but as we want to dive a little bit deeper into Docker, we will do it wit plain Dockerfiles.
+
+\textbf{Create Random Generator}
+
+The Dockerfile to create the Docker image:
+\lstinputlisting[language=Bash]{Applikationen/generator/Dockerfile}
+
+within the root directory of the Random Generator.
+
+the flag -t inicates that the name of the image and the dot at the end tells docker to use the Dockerfile from the current working directory.
+
+\begin{lstlisting}[language=Bash]
+docker build -t rand-gen-image .
+\end{lstlisting}
+
+\textbf{Middle Tier Docker Image}
+\lstinputlisting[language=Bash]{Applikationen/middletier/Dockerfile}
+
+We are using anapsix base image, as we want to keep the Docker image as small as possible.
+
+Finally we can create the docker image with the following Command.
+
+Important is, we need to be in the root directory of the Projecct where also the Dockerfile is stored.
+\begin{lstlisting}[language=Bash]
+docker build -t rand-middle-image .
+\end{lstlisting}
+As previously mentioned, we will use multi stage builds. In this case we use a maven base image as a builder.
+Reference for using maven with Docker \url{https://hub.docker.com/_/maven/}
+
+\textbf{Statistic Service}
+For the image itself we are using anapsix base image as this is currently the smallest possible java base image \url{https://hub.docker.com/r/anapsix/alpine-java/dockerfile/}
+If you want to run the project on a raspberry, you would need to change the base image to hypriot as a Raspberry has a diffret underlaying CPU architecture which is based on ARM \footnote{https://github.com/hypriot/rpi-java}
+
+
+
+\lstinputlisting[language=Bash]{Applikationen/statservice/Dockerfile}
+
+Basically the Dockerfile for this Service looks pretty much the same as the one for the Middle tier except that we do not need to declare an environment variable for the random generator.
+
+\begin{lstlisting}[language=Bash]
+docker build -t rand-stat-image .
+\end{lstlisting}
+
+\textbf{Frontend Service}
+
+As we have one more step within the Frontend service. We need to have one more stage. As we need node package manager to build the angular application we are goint to use a node.js docker base image \footnote{ Node Repository Docker hub \url{https://hub.docker.com/_/node/}}.
+
+
+\lstinputlisting[language=Bash]{Applikationen/frontend/Dockerfile}
+
+\begin{lstlisting}[language=Bash]
+docker build -t rand-front-image .
+\end{lstlisting}
+
+
+\subsection{running with Docker}
+
+\textbf{Create a Network}
+\begin{lstlisting}[language=Bash]
+docker network create  -d bridge rand-network
+\end{lstlisting}
+
+\textbf{Start the Database Container}
+
+\begin{lstlisting}[language=Bash]
+docker run -d --name rand-gen-database \
+-e MYSQL_ROOT_PASSWORD='password' \
+-e MYSQL_USER='random_user' \
+-e MYSQL_PASSWORD='random_password' \
+-e MYSQL_DATABASE='rand_numbers' \
+--network rand-network \
+mysql:5.6
+\end{lstlisting}
+
+\textbf{Start the Random Generator App}
+\begin{lstlisting}[language=Bash]
+docker run -d --name=rand-gen-tier \
+--network rand-network \
+rand-gen-image
+\end{lstlisting}
+
+\textbf{Start the middle tier Application}
+\begin{lstlisting}[language=Bash]
+docker run -d \
+--name rand-middle-tier \
+--network rand-network \
+middle-tier
+\end{lstlisting}
+
+\textbf{Starting the Stat Tier Application}
+\begin{lstlisting}[language=Bash]
+docker run -d \
+--name rand-stat-tier \
+--network rand-network \ 
+rand-stat-image
+\end{lstlisting}
+
+\textbf{Start the Frontend Service}
+\begin{lstlisting}[language=Bash]
+docker run -d -p 8080:8080 \
+--network rand-network \
+--name rand-frontend \
+rand-front-image
+\end{lstlisting}
+
+All the default environment Variables are already set within the Dockerfiles therefore we can startup all the services one by one.

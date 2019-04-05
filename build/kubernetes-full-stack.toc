@@ -6,9 +6,10 @@
 \contentsline {subsection}{\numberline {3.1}Database}{4}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Random Generator}{4}{subsection.3.2}
 \contentsline {subsection}{\numberline {3.3}Middle Tier}{5}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Statistic Service}{9}{subsection.3.4}
-\contentsline {subsection}{\numberline {3.5}Frontend}{12}{subsection.3.5}
-\contentsline {subsection}{\numberline {3.6}Creating the Docker Images}{20}{subsection.3.6}
-\contentsline {subsection}{\numberline {3.7}running with Docker}{20}{subsection.3.7}
-\contentsline {section}{\numberline {4}Installing Kubernetes}{21}{section.4}
-\contentsline {section}{\numberline {5}Deploy Services to Kubernetes}{21}{section.5}
+\contentsline {subsection}{\numberline {3.4}Statistic Service}{8}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Frontend}{11}{subsection.3.5}
+\contentsline {section}{\numberline {4}Docker}{17}{section.4}
+\contentsline {subsection}{\numberline {4.1}Creating the Docker Images}{17}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}running with Docker}{20}{subsection.4.2}
+\contentsline {section}{\numberline {5}Installing Kubernetes}{21}{section.5}
+\contentsline {section}{\numberline {6}Deploy Services to Kubernetes}{21}{section.6}
