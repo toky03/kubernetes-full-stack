@@ -12,9 +12,10 @@ Name & MiddleTier \\
 Description & Middle Tier Service for Random Generator Application \\
 Packaging & Jar \\
 Java Version & 8 \\
-Dependencies & Web, JPA, MySQL, Rest Repositories
+Dependencies & Web, JPA, MySQL, Rest Repositories (Actuator)
 \end{tabular}
 \end{tabbing}
+Actuator is optional in case you want to monitor your application.
 The Website will create a zip file to download. This zipfile has to be extracted to the desired Project folder.
 \dirtree{%
 .1 middletier.
@@ -24,9 +25,9 @@ The Website will create a zip file to download. This zipfile has to be extracted
 .2 pom.xml.
 .2 src.
 }
-all blue folders are already given. the Dockerfile still has to be created.
+Spring Initializer already created mostly the whole structure. the Dockerfile has to be created only.
 
-Now inside of the Project create the following Project Structure and files.
+Now inside of the Project /src/main/java create the following Project  Structure and files.
 
 \dirtree{%
 .1 ch.toky.randgen.middletier.
@@ -41,92 +42,41 @@ The file MiddleTierApplication.java should already be in place. as Spring Boot I
 Inside of controller, A file named MiddletierController.java needs to be created with the following content.
 
 Within the model package two new Files have to be created: PodStat.java and RandomNumber.java.
-
+\newpage
 PodStat is an Entity and therefore the class has to be annotated with @Entity.
 It contents the following fields with their respective getter and Setter Methods.
-\begin{lstlisting}[language=Java]
-@Id
-@GeneratedValue(strategy=GenerationType.AUTO)
-private Long podStatID;
-private String id;
-private Long timeStamp;
-private Long counter;
-\end{lstlisting}
+ \lstinputlisting[language=Java, firstline=11, lastline=16]{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/model/PodStat.java}
+
 
 The class RandomNumber is only a DTO which is retreived from the random generator Service. Therefore there is no need for a annotation.
 Only the following Fields needs to be declared with their getters and setters:
-
-\begin{lstlisting}[language=Java]
-private String id;
-private Long randNumber;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=5, lastline=6]{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/model/RandomNumber.java}
 
 In the repository package the file PodStatRepository.java will be created.
 As this java file is not a class but an interface it needs to be changed to interface and extends JpaRepository<PodStat, Long>
 and it will be annotated with @Repository
-
-Now those two methods are created 
-\begin{lstlisting}[language=Java]
-@Query("Select count(ps.id) from PodStat ps where ps.id = ?1")
-Long countUniqueId(String id);
-
-@Query("Select count(ps.id) from PodStat ps")
-Long findMaxCount();
-\end{lstlisting}
+Now those two methods can be created 
+\lstinputlisting[language=Java, firstline=12, lastline=16]{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/repository/PodStatRepository.java}
 
 Witin the controller all the endpoints are declared. Therfore it will be annotaded with @RestController
 
 Those fields are needed within the controller and are therefore declared first.
-\begin{lstlisting}[language=Java]
-@Autowired
-private ObjectMapper objectMapper;
-@Autowired
-private PodStatRepository podStatRepository;
-private Map<String, String> env = System.getenv();
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=17, lastline=21]{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/controller/MiddletierController.java}
+\newpage
 As there should not be any hardcoded url according to the 12 Factor application \footnote{Accessible at \url{https://12factor.net/}}, the Url will be retreived through a System Variable.
 
-Now a controller Method with the business logic can be declared:
-\begin{lstlisting}[language=Java]
-@RequestMapping(value = "/", produces = "application/json")
-public RandomNumber getRandom() {
+Now we create a controller method with the business logic inside:
+\lstinputlisting[language=Java, firstline=23, lastline=37]{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/controller/MiddletierController.java}
 
-    RandomNumber randNum = getNewRandomNumber();
-    Long maxCountId = podStatRepository.countUniqueId(randNum.getId());
-    Long maxCountOverall = podStatRepository.findMaxCount();
-    PodStat tmpPod = new PodStat();
-    tmpPod.setId(randNum.getId());
-    tmpPod.setTimeStamp(maxCountOverall+1);
-    tmpPod.setCounter(maxCountId +1);
-    podStatRepository.save(tmpPod);
-
-    return randNum;
-
-}
-\end{lstlisting}
 The above Method listens on the path / and returns the Random number after saving it to the database with the actual count.
 
 Now the last Method is used to retreive the Random Number from the Random Generator Service.
-\begin{lstlisting}[language=Java]
-private RandomNumber getNewRandomNumber() {
+\lstinputlisting[language=Java, firstline=39, lastline=47]{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/controller/MiddletierController.java}
 
-    String randGenUrl=env.get("RANDOM_GENERATOR_URL");
-    String URL = randGenUrl;
-    RestTemplate restTemplate = new RestTemplate();
-
-    return   restTemplate.getForObject(URL, RandomNumber.class);
-
-}
-\end{lstlisting}
 Above Source code contains the Controller and the Service, which should be separated optimally.
 Next two files represents POJOs which are going to be used from controller and provided by Repositories.
 
 The last thing which needs to be done for the Middle Tier Service is to setup the default values for the Database Connection.
-\begin{lstlisting}
-spring.jpa.hibernate.ddl-auto=update
-spring.datasource.username=random_user
-spring.datasource.password=random_password
-spring.datasource.url=jdbc:mysql://localhost:3306/rand_numbers
-\end{lstlisting}
+\lstinputlisting[language=Bash, firstline=39, lastline=47]{Applikationen/middletier/src/main/resources/application.properties}
 The datasource configurations are going to be overwritten by Environment Variables once they run inside of a Docker Container.
 

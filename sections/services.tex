@@ -10,25 +10,23 @@ After the installation log in to MySQL as root.
 sudo mysql
 \end{lstlisting}
 Now the Database and the user can be created and permissions to the respective schema will be given.
-\begin{lstlisting}[language=SQL]
-CREATE database db_example;
-CREATE USER 'springuser'@'localhost' IDENTIFIED BY ThePassword;
-GRANT ALL PRIVILEGES ON *.db_example TO 'springuser'@'localhost';
-\end{lstlisting}
+\lstinputlisting[language=SQL]{Applikationen/database/setup.sql}
 With this, the Database is ready to used by the Random Generator Example from localhost.
-
+\newpage
 \subsection{Random Generator}
 \input{sections/random_generator.tex}
 
+\newpage
 
 \subsection{Middle Tier}
 
 \input{sections/middletier.tex}
 
+\newpage
 
 \subsection{Statistic Service}
 \input{sections/statistictier.tex}
-
+\newpage
 \subsection{Frontend}
 \input{sections/frontend.tex}
 

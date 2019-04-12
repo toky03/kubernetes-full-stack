@@ -9,6 +9,9 @@ As our builds will run every time in a new Container, it needs to load all depen
 For example the spotify docker Maven plugin which would enable us to build the Dockerfile directly with maven \footnote{https://github.com/spotify/docker-maven-plugin}.
 There is also a maven plugin to execute the angular build before building the jar file \footnote{https://github.com/eirslett/frontend-maven-plugin}.
 All of them can make our life easier but as we want to dive a little bit deeper into Docker, we will do it wit plain Dockerfiles.
+\textbf{Database}
+
+\lstinputlisting[language=Bash]{Applikationen/database/Dockerfile}
 
 \textbf{Create Random Generator}
 
@@ -40,8 +43,6 @@ Reference for using maven with Docker \url{https://hub.docker.com/_/maven/}
 \textbf{Statistic Service}
 For the image itself we are using anapsix base image as this is currently the smallest possible java base image \url{https://hub.docker.com/r/anapsix/alpine-java/dockerfile/}
 If you want to run the project on a raspberry, you would need to change the base image to hypriot as a Raspberry has a diffret underlaying CPU architecture which is based on ARM \footnote{https://github.com/hypriot/rpi-java}
-
-
 
 \lstinputlisting[language=Bash]{Applikationen/statservice/Dockerfile}
 
@@ -91,10 +92,9 @@ rand-gen-image
 
 \textbf{Start the middle tier Application}
 \begin{lstlisting}[language=Bash]
-docker run -d \
---name rand-middle-tier \
+docker run -d --name rand-middle-tier \
 --network rand-network \
-middle-tier
+rand-middle-image
 \end{lstlisting}
 
 \textbf{Starting the Stat Tier Application}

@@ -18,21 +18,75 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{3}{section.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Prerequisites}{3}{section.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Technology}{3}{subsection.2.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Technology}{4}{subsection.2.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Model}{4}{subsection.2.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Create Services}{4}{section.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Database}{4}{subsection.3.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Random Generator}{4}{subsection.3.2}}
-\@writefile{lol}{\contentsline {lstlisting}{Applikationen/generator/rand\textunderscore gen.py}{5}{lstlisting.-4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Middle Tier}{5}{subsection.3.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Statistic Service}{8}{subsection.3.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Frontend}{11}{subsection.3.5}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Docker}{17}{section.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Creating the Docker Images}{17}{subsection.4.1}}
-\@writefile{lol}{\contentsline {lstlisting}{Applikationen/generator/Dockerfile}{18}{lstlisting.-53}}
-\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/Dockerfile}{18}{lstlisting.-55}}
-\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/Dockerfile}{19}{lstlisting.-57}}
-\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/Dockerfile}{20}{lstlisting.-59}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}running with Docker}{20}{subsection.4.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Installing Kubernetes}{21}{section.5}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Deploy Services to Kubernetes}{21}{section.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Development}{5}{section.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Database}{5}{subsection.3.1}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/database/setup.sql}{5}{lstlisting.-3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Random Generator}{6}{subsection.3.2}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/generator/rand\textunderscore gen.py}{6}{lstlisting.-4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Middle Tier}{7}{subsection.3.3}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/model/PodStat.java}{8}{lstlisting.-5}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/model/RandomNumber.java}{8}{lstlisting.-6}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/repository/PodStatRepository.java}{8}{lstlisting.-7}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/controller/MiddletierController.java}{8}{lstlisting.-8}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/controller/MiddletierController.java}{9}{lstlisting.-9}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/java/ch/toky/randgen/middletier/controller/MiddletierController.java}{9}{lstlisting.-10}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/src/main/resources/application.properties}{9}{lstlisting.-11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Statistic Service}{10}{subsection.3.4}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/controller/Controller.java}{10}{lstlisting.-12}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/controller/Controller.java}{11}{lstlisting.-13}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/PodStat.java}{11}{lstlisting.-14}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/Series.java}{11}{lstlisting.-15}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/SeriesItem.java}{11}{lstlisting.-16}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/Stat.java}{12}{lstlisting.-17}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/repository/PodStatRepository.java}{12}{lstlisting.-18}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/service/StatService.java}{13}{lstlisting.-19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Frontend}{14}{subsection.3.5}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/angular.json}{14}{lstlisting.-20}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/models/random\textendash number.ts}{15}{lstlisting.-21}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/models/pod\textendash statistic.ts}{15}{lstlisting.-22}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/models/series\textendash item.ts}{15}{lstlisting.-23}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/models/series.ts}{15}{lstlisting.-24}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/fetch\textendash number.service.ts}{15}{lstlisting.-25}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/fetch\textendash number.service.ts}{15}{lstlisting.-26}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/fetch\textendash number.service.ts}{16}{lstlisting.-27}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/statistic.service.ts}{16}{lstlisting.-28}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/statistic.service.ts}{16}{lstlisting.-29}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/material/material.module.ts}{16}{lstlisting.-30}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.module.ts}{16}{lstlisting.-31}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.component.ts}{17}{lstlisting.-32}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.component.ts}{17}{lstlisting.-33}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.component.ts}{17}{lstlisting.-34}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.component.ts}{17}{lstlisting.-35}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.component.ts}{18}{lstlisting.-36}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/app/app.component.html}{18}{lstlisting.-37}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/PodStat.java}{19}{lstlisting.-38}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/RandomNumber.java}{19}{lstlisting.-39}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/Series.java}{19}{lstlisting.-40}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/SeriesItem.java}{19}{lstlisting.-41}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/service/RestService.java}{20}{lstlisting.-42}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/service/RestService.java}{20}{lstlisting.-43}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/FrontendApplication.java}{21}{lstlisting.-44}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/FrontendApplication.java}{21}{lstlisting.-45}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Docker}{22}{section.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Creating the Docker Images}{22}{subsection.4.1}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/database/Dockerfile}{22}{lstlisting.-46}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/generator/Dockerfile}{22}{lstlisting.-47}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/middletier/Dockerfile}{23}{lstlisting.-49}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/statservice/Dockerfile}{23}{lstlisting.-51}}
+\@writefile{lol}{\contentsline {lstlisting}{Applikationen/frontend/Dockerfile}{24}{lstlisting.-53}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}running with Docker}{25}{subsection.4.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Kubernetes}{26}{section.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Installing Kubernetes}{26}{subsection.5.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Deploy Services}{27}{subsection.5.2}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/mysql\textendash deployment.yml}{27}{lstlisting.-61}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/mysql\textendash deployment.yml}{27}{lstlisting.-62}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/rand\textendash gen\textendash deployment.yml}{28}{lstlisting.-63}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/rand\textendash gen\textendash deployment.yml}{28}{lstlisting.-64}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/middle\textendash tier\textendash deployment.yml}{29}{lstlisting.-65}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/middle\textendash tier\textendash deployment.yml}{29}{lstlisting.-66}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/stat\textendash tier\textendash deployment.yml}{29}{lstlisting.-67}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/stat\textendash tier\textendash deployment.yml}{30}{lstlisting.-68}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/frontend\textendash deployment.yml}{30}{lstlisting.-69}}
+\@writefile{lol}{\contentsline {lstlisting}{config\textendash files/frontend\textendash deployment.yml}{31}{lstlisting.-70}}

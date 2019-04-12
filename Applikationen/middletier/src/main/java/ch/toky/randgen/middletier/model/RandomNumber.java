@@ -2,8 +2,8 @@ package ch.toky.randgen.middletier.model;
 
 public class RandomNumber {
 
-    String id;
-    Long randNumber;
+    private String id;
+    private Long randNumber;
 
     public String getId() {
         return id;

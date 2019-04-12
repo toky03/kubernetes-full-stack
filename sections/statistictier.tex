@@ -32,145 +32,42 @@ For the statistic Tier Service we need to create the following Package structure
 .3 StatService.java.
 }
 
-For this time, we will leave the Main Class allone in the file StatserviceApplication.java. Which means we do not have to change this file as Spring Boot already did everything needed for us.
+This time, we will create a seperate controller class. Therefore, inside of StatserviceApplication.java will only be the main method which calls the Spring Boot applicaton. Which means we do not have to change this file as Spring Boot already did everything needed for us.
 
 Controller.java will be annotated with @RestController as it contains all our endpoints.
 
 next, we need the StatService class in this controller, this is why we inject it with @Autowired.
-\begin{lstlisting}[language=Java]
-@Autowired
-StatService statService;
-\end{lstlisting}
-
+\lstinputlisting[language=Java, firstline=16, lastline=17]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/controller/Controller.java}
+\newpage
 Now we can also create our two endpoints, one for all stats, and one with the history.
+\lstinputlisting[language=Java, firstline=20, lastline=31]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/controller/Controller.java}
 
-\begin{lstlisting}[language=Java]
-@RequestMapping(method = RequestMethod.GET, value="/")
-public List<Stat> getAllPodStats(){
+We could leave the method out as GET is anyway the default method but we leave it here for for understanding.
 
-    return statService.getAllPodStats();
-}
-    
-    
-@RequestMapping(method = RequestMethod.GET, value="/history")
-public List<Series> getAllPodStatsHistory(){
-        
-	return statService.getPodHistory();	
-}
-\end{lstlisting}
+Next we are going to declare the Entities and DTOs.
 
-We could leave the method out as GET is anyway the default method but we leave it here for for the understanding.
-
-next we are going to declare all our Entities.
-
-All of them are annotated with @Entity.
 For simplicity i will only show all fields but of cource also the getter and setter methods needs to be implemented.
 
 Fields for PodStat:
+\lstinputlisting[language=Java, firstline=11, lastline=16]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/PodStat.java}
 
-\begin{lstlisting}[language=Java]
-@Id
-@GeneratedValue(strategy=GenerationType.AUTO)
-private Long podStatID;
-private String id;
-private Long timeStamp;
-private Long counter;
-...
-\end{lstlisting}
+Series will be a DTO and therefore not annotated with Entity we have also a contructor in order to initialize a new Array List.
+\lstinputlisting[language=Java, firstline=8, lastline=18]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/Series.java}
 
-Series not annotated with @Entity as it is only a helper Entity we have also a contructor in order to initialize a new Array List.
-\begin{lstlisting}[language=Java]
-private String name;
-private List<SeriesItem> series;
-public Series(String name) {
-	super();
-	this.name = name;
-	this.series = new ArrayList<SeriesItem>();
-}
-...
-
-public void appendSeries(SeriesItem seriesItem){
-    this.series.add(seriesItem);
-}
-\end{lstlisting}
-
-SeriesImtem is the second helper class we are going to use and therefore as well not annotated with @Entity
-\begin{lstlisting}[language=Java]
-private Long name;
-private Long value;
-	
-public SeriesItem(Long name, Long value) {
-	super();
-	this.name = name;
-	this.value = value;
-}
-\end{lstlisting}
-
-
-\begin{lstlisting}[language=Java]
-private String id;
-private Long counter;
-
-public Stat(String id, Long counter) {
-	super();
-	this.id = id;
-	this.counter = counter;
-}
-\end{lstlisting}
+SeriesItem is the second DTO class we are going to use and therefore as well not annotated with @Entity
+\lstinputlisting[language=Java, firstline=5, lastline=12]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/SeriesItem.java}
+\newpage
+Stat Class:
+\lstinputlisting[language=Java, firstline=5, lastline=11]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/model/Stat.java}
 
 Now we can implement the Repository (annotated with @Repository) as an interface which extends JpaRepository<PodStat, String>
-
-\begin{lstlisting}[language=Java]
-@Query("Select count(ps.id) from PodStat ps where ps.id = ?1")
-Long countUniqueId(String id);
-	
-@Query("Select distinct ps.id from PodStat ps")
-List<String> findUniqueIds();
-	
-@Query("Select ps from PodStat ps where ps.id = ?1")
-List<PodStat> findByIds(String id);
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=13, lastline=20]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/repository/PodStatRepository.java}
 
 Now the last file is the most important one as there we will have all the business logig in it.
-
+\newpage
 We need to annotate it with @Service in order to make it available for Spring Boot to create a Bean out of it.
 
-
-\begin{lstlisting}[language=Java]
-@Autowired
-PodStatRepository podStatRepository;
-
-private Iterable<String> getAllIds() {
-	Iterable<String> source = podStatRepository.findUniqueIds();
-	return source;
-}
-
-public List<Stat> getAllPodStats() {
-
-	Iterable<String> source = getAllIds();
-	List<Stat> podStatistics = new ArrayList<Stat>();
-	source.forEach((id) -> {
-		podStatistics.add(new Stat(id, podStatRepository.countUniqueId(id)));
-	});
-	return podStatistics;
-}
-	
-public List<Series> getPodHistory(){
-		
-	Iterable<PodStat> source = podStatRepository.findAll();	
-	Map<String, Series> podHistorys = new HashMap<>();	
-	source.forEach( (entry) -> {				
-		if(podHistorys.get(entry.getId()) == null) {			
-			podHistorys.put(entry.getId(), new Series(entry.getId()));			
-		}
-		podHistorys.get(entry.getId())
-		.appendSeriesItem(new SeriesItem(entry.getTimeStamp(), entry.getCounter()));							
-	});
-		
-	List<Series> plainSeries = new ArrayList<>(podHistorys.values());
-	return plainSeries;	
-}
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=20, lastline=57]{Applikationen/statservice/src/main/java/ch/toky/randgen/statservice/service/StatService.java}
 
 Now that all the java fils are created we can also create the Dockerfile for this Service.
 

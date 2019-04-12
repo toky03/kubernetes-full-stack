@@ -3,7 +3,7 @@ FROM maven:3.5-jdk-8 AS builder
 COPY ./pom.xml /app/pom.xml
 
 COPY ./src /app/src
-ADD ~/.m2 /root/.m2 
+
 RUN mvn -f /app/pom.xml  package -DskipTests
 
 FROM anapsix/alpine-java:latest
@@ -16,5 +16,7 @@ ENV SPRING_DATASOURCE_USERNAME=random_user
 
 ENV SPRING_DATASOURCE_PASSWORD=random_password
 
-CMD java -jar /opt/stat-tier.jar
+ENTRYPOINT ["java"]
+
+CMD ["-jar", "/opt/stat-tier.jar"]
 

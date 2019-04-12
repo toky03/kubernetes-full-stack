@@ -1,15 +1,15 @@
-The Random Generator will be a verry simple Python App which has an unique Id per Service instance. It will return his id and a new Random Number. For this application we create a folder called RandGen with the following Structure.
+The Random Generator will be a verry simple Python app which has an unique Id per Service instance. It will return his id and a new randomly generated number. For this application we create a folder called generator with the following Structure.
 
 \dirtree{%
-.1 RandGen.
+.1 generator.
 .2 Dockerfile.
 .2 rand\_gen.py.
 .2 requirements.txt.
 }
-The Dockerfile is needed to create the Docker Image which will be used from Kubernetes to Create the Random Generator Service.
+The Dockerfile is needed to create the Docker Image which will be used from Kubernetes to create the random generator service.
 rand\_gen.py is the complete Random Generator Python application based on Flask\footnote{More information about Flask can be found on the official Homepage \url{http://flask.pocoo.org/}}.
  \lstinputlisting[language=Python]{Applikationen/generator/rand_gen.py}
-In requirements.txt are the Python packages specified. In this case it is flask. therefore this file contains only one line which is
+In requirements.txt are the Python packages specified which are needed to be installed. In our case we need flask. Therefore, this file contains only one line which is:
 \begin{verbatim}
 Flask==1.0.2
 \end{verbatim}

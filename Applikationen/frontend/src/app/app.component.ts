@@ -20,7 +20,6 @@ export class AppComponent {
   statistics: PodStatistic[] = [new PodStatisticImpl()];
   dataSource: any;
   multi: Series[];
-
   displayedColumns: string [] = ['id', 'counter'];
 
   // Graph
@@ -41,9 +40,7 @@ export class AppComponent {
 
 
   constructor(private fetchNumberService: FetchNumberService,
-    private statisticService: StatisticService) {
-
-    }
+    private statisticService: StatisticService) {}
 
     getNewNumber(){
       this.fetchNumberService.getRandomNumber()

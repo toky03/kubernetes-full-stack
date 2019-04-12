@@ -6,26 +6,27 @@ COPY . .
 
 RUN npm install
 
-RUN npm run ng build -- --prod
+RUN npm run build
 
 FROM maven:3.5-jdk-8 AS builder
 
-COPY --from=frontbuilder app/pom.xml /app/pom.xml
-
-COPY --from=frontbuilder app/src /app/src
+COPY --from=frontbuilder app/ /app/
 
 RUN mvn -f /app/pom.xml  package -DskipTests
 
 FROM anapsix/alpine-java:latest
 
-COPY --from=builder /app/target/middletier-0.0.1-SNAPSHOT.jar /opt/middle-tier.jar
+COPY --from=builder /app/target/frontend-0.0.1-SNAPSHOT.jar /opt/front-tier.jar
 
 
-ENV STAT_URL=http://stat-tier:8080/
+ENV STAT_URL=http://rand-stat-tier:8080/
 
-ENV RAND_NUM_URL=http://middle-tier:8080/
+ENV RAND_NUM_URL=http://rand-middle-tier:7070/
 
-ENV HISTORY_URL=http://stat-tier:8080/history
+ENV HISTORY_URL=http://rand-stat-tier:8080/history
 
-CMD java -jar /opt/middle-tier.jar
+ENTRYPOINT ["java"]
+
+CMD ["-jar", "/opt/front-tier.jar"]
+
 

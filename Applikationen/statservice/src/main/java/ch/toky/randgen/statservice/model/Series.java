@@ -13,6 +13,10 @@ public class Series {
         this.series = new ArrayList<SeriesItem>();
     }
 
+    public void appendSeriesItem(SeriesItem seriesItem){
+        this.series.add(seriesItem);
+    }
+
     public String getName() {
         return name;
     }
@@ -29,7 +33,4 @@ public class Series {
         this.series = series;
     }
 
-    public void appendSeriesItem(SeriesItem seriesItem){
-        this.series.add(seriesItem);
-    }
 }

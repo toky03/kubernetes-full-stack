@@ -14,6 +14,7 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \definecolor{keywordcolour}{rgb}{0.0,0.0,0.92}
+
  
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
@@ -36,6 +37,8 @@
 
 \lstset{style=mystyle}
 
+
+
 \author{Marco Jakob}
 \title{Kubernetes Full Stack Application}
 
@@ -47,28 +50,35 @@
 \newpage
 
 \section{Introduction}
-This Introduction should give an end to end overview to deploy a sample Application with multiple Services and a Databases completely on Kubernetes.
-The Application generates Random Numbers, saves them with a Timestamp on a database. Displays the new Number on a Frontend and also shows Graphs from previous Random Numbers based on their Producers Id.
-The Goal of the whole application is first to create an end to end Application fully Cloud native which runs as well locally without any changes. The second goal is to show graphically the self healing process of Kubernetes, namely when we delete a random generator Pod, it should automatically create a new Random generator Pod with a new Id.
+This Introduction should give an end to end overview to develop a sample Application with multiple microservices and a Databases completely on Kubernetes.Furthermore, the application should run on a local machine as well as on simple Docker containers witout any manual changes.
+The Application generates random numbers, saves them with a Timestamp on a database, displays the new number on a Frontend and also shows graphs from previous andom numbers based on their producerservices Id.
+The goal of the whole application is primarly to develop an end to end Application fully cloud native wit all configurations based on requirements for cloud native applications. The second goal is to show graphically the self healing process of Kubernetes, namely when we delete a random generator Pod, it should automatically create a new Random generator Pod with a new Id.
 \section{Prerequisites}
 To create the application it is assumed that we already have a machine with the following Software running:
 \begin{itemize}
-\item Java Development Kit (minimum 1.8)
-\item Maven build tool
+\item Java Development Kit (minimum 1.8, JAVA\_HOME set) 
+\item Maven build tool (MAVEN\_HOME and M2\_HOME set)
 \item Python 3.6
+\item node package manager
 \item Docker
-\item Angular (minimum version 6) with the ng command
+\item Angular (minimum version 6) and Angular CLI
 \end{itemize}
+Not Required but recommendet
+\begin{itemize}
+\item Visual Studio Code
+\item Spring tool suite
+\end{itemize}
+\newpage
 \input{sections/introduction.tex}
-
-
-\section{Create Services}
+\newpage
+\section{Development}
 \input{sections/services.tex}
+\newpage
 \section{Docker}
 \input{sections/docker.tex}
-\section{Installing Kubernetes}
+\newpage
+\section{Kubernetes}
 \input{sections/kubernetes.tex}
-\section{Deploy Services to Kubernetes}
 
 
 

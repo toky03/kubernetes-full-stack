@@ -1,4 +1,4 @@
-The frontend Application is build with Spring Boot and 
+The frontend Application is build with Spring Boot and Angular together.
 
 Creating Spring Boot Application:
 \begin{tabbing}
@@ -16,297 +16,141 @@ Dependencies & Web, Rest Repositories
 \end{tabular}
 \end{tabbing}
 
-As we now only have the controller part of our User interface with the Spring boot application, we now need to create the Angular part.
+Until now we only have the controller part of our User interface with the Spring boot application, we need to create the Angular partnow.
 
-therefore we create a new Project directly with Angular CLI within the folder where all the other Projects are stored.
+Therefore, we create a new Project directly with Angular CLI within the folder where all the other Projects are stored.
 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 ng new ui-frontend
-\end{lstlisting}
+\end{verbatim}
 
-Now we can try if the project has been set up correctly with navigating to the new project folder and hit ng serve.
-Once the server is ready we should be able to access localhost:4200 and see a sample home page made by angular cli.
+Now to try if the project has been set up correctly. Change path to the new project folder and run \texttt{ng serve}.
+Once the server is ready we should be able to access http://http://localhost:4200 and see a sample home page created by angular cli.
 
-As the frontend should be only one singe application we will now move all folders into the Spring boot application.
+As the frontend should be only one single application we will now move all folders into the Spring boot application folder.
 
 in the Folder where all Projects are stored we execute those commands.
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 mv ui-frontend/src/* frontend/src/
 rm -rf ui-frontend/src/
 mv ui-frontend/* frontend/
 rm -rf ui-frontend
-\end{lstlisting}
+\end{verbatim}
 
+In order to serve all the frontend files from the Spring Boot application we need to tell angular to save all compiled files into the target/classes/static folder.
+In order to achieve this, we need to change the output path option in the file angular.json
+\lstinputlisting[language=Java, firstline=15, lastline=17]{Applikationen/frontend/angular.json}
 
-
-to install all dependent libraries for 
-
-In order to serve all the Frontend files from the Spring Boot application we need to tell angular to save all compiled files into the target/classes/static folder.
-Therefore we need to change the output path option in the file angular.json
-\begin{lstlisting}[language=Java]
-...
-    "outputPath": "target/classes/static",
-    ...
-\end{lstlisting}
-
-Now every time the Angular Project is built it will be compiled directly to the path where spring boot serves static files.
-When we now start the spring boot application we will get the Angular Project under the root path /.
+Now every time the Angular Project is built with \texttt{ng build} it will be compiled and copied directly to the path where spring boot serves static files.
+Every time the spring boot application has started we will get the static web files under the root path /.
 
 Now we are going to modify the Angular Project itself.
 
 First we create all interfaces with the following commands.
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 ng generate interface models/randomNumber
 ng generate interface models/seriesItem
 ng generate interface models/series
 ng generate interface models/podStatistic
-\end{lstlisting}
+\end{verbatim}
 
-Interface RandomNumber
-\begin{lstlisting}[language=Java]
-id: string;
-randNumber: number;
-\end{lstlisting}
+Within Interface RandomNumber, declare those two fields.
+\lstinputlisting[language=Java, firstline=2, lastline=3]{Applikationen/frontend/src/app/models/random-number.ts}
 
-Interface PodStatistic
-\begin{lstlisting}[language=Java]
-id: string;
-counter: number;
-\end{lstlisting}
+Within Interface PodStatistic
+\lstinputlisting[language=Java, firstline=2, lastline=3]{Applikationen/frontend/src/app/models/pod-statistic.ts}
 
 Interface SeriesItem
-\begin{lstlisting}[language=Java]
-name: number;
-value: number;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=2, lastline=3]{Applikationen/frontend/src/app/models/series-item.ts}
 
 Interface Series
-\begin{lstlisting}[language=Java]
-name: string;
-series: SeriesItem;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=4, lastline=5]{Applikationen/frontend/src/app/models/series.ts}
 
 In order to have some empty Objects we also need to declare the following Classes within the folder implementation.
 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 ng generate class RandNumberImpl
 ng generate class PodStatisticImpl
-\end{lstlisting}
+\end{verbatim}
 Where RandomNumberImpl implements RandomNumber and PodStatisticImpl implements PodStatistic
 Within those classes we define all Strings as empty Strings and all numbers as 0.
 This prevents us from getting an error from the Html due to an undefined object.
 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 ng generate service statistic
 ng generate service fetch-number
-\end{lstlisting}
+\end{verbatim}
 this created 4 new files for us two typescript and two spec.ts files which would be needed for the end to end tests.
-
-Both Services also need to be declared in the provders array from app.module.ts if not yet done.
+Both Services also need to be declared in the provders array from $app.module.ts$ if not yet done from angular cli.
 
 We will now modify first the fetch-number service
 
 withing the Constructor argument field we pass a HttpClient.
-\begin{lstlisting}[language=Java]
-private _http: HttpClient
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=11, lastline=12]{Applikationen/frontend/src/app/fetch-number.service.ts}
 
 Therefore you need to make sure to implement the following Line.
-\begin{lstlisting}[language=Java]
-import { HttpClient } from '@angular/common/http';
-\end{lstlisting}
-
-\begin{lstlisting}[language=Java]
-getRandomNumber(): Observable<RandomNumber>{
-    return this._http.get<RandomNumber>('randomNumber');
-}
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=2, lastline=2]{Applikationen/frontend/src/app/fetch-number.service.ts}
+\newpage
+\lstinputlisting[language=Java, firstline=13, lastline=15]{Applikationen/frontend/src/app/fetch-number.service.ts}
 
 In the Statistic Service File we declare the same HttpClient to be passed to the constructor.
-\begin{lstlisting}[language=Java]
-private _http: HttpClient
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=12, lastline=13]{Applikationen/frontend/src/app/statistic.service.ts}
 
 Then the following methods are going to be declared:
-\begin{lstlisting}[language=Java]
-getStatistics(): Observable<PodStatistic[]>{
+\lstinputlisting[language=Java, firstline=14, lastline=22]{Applikationen/frontend/src/app/statistic.service.ts}
 
-  return this._http.get<PodStatistic[]>('statistics');
-}
+As we are using Material design, we need to create a seperate Module to manage all depedencies which are used for Material design.
 
-getHistory(): Observable<Series[]>{
-
-  return this._http.get<Series[]>('history');
-}
-\end{lstlisting}
-
-As we are using Material design, we now create a seperate Module to manage all depedencies for Material design.
-
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 ng generate module material
-\end{lstlisting}
-Within the newly created material.module.ts file we add the following Modules to imports and exports array.
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatTableModule
-
-In order to be able to use our newly created Material Module within our app, we need to add it to the import array from app.module.ts along with all the following imports.
-\begin{lstlisting}[language=Java]
-	MaterialModule,
-    HttpClientModule,
-    NgxChartsModule,
-    BrowserAnimationsModule
-\end{lstlisting}
+\end{verbatim}
+Within the newly created $material.module.ts$ file we add the following Modules into imports and exports array.
+\lstinputlisting[language=Java, firstline=8, lastline=12]{Applikationen/frontend/src/app/material/material.module.ts}
+In order to be able to use our newly created Material Module within our app, we need to add it to the import array from $app.module.ts$ along with all the following imports.
+\lstinputlisting[language=Java, firstline=16, lastline=20]{Applikationen/frontend/src/app/app.module.ts}
    
 By now we cannot import all the declared Module Dependencies. this is because we use a lot of external libraries which we now have to install via npm.
 
-in order to use Angular Material \footnote{Find documentation via following link \url{https://material.angular.io/guide/getting-started}}
-\begin{lstlisting}[language=Bash]
-npm install --save @angular/material @angular/cdk @angular/animations 
-\end{lstlisting}
-
-
-We wil use Ngx-Charts Module to display the statistics as a graph.
+in order to use Angular Material \footnote{documentation via following link \url{https://material.angular.io/guide/getting-started}}
+\begin{verbatim}
+npm install --save @angular/material \\
+@angular/cdk @angular/animations 
+\end{verbatim}
+\newpage
+Ngx-Charts Module is to display the statistics as a graph.
 \footnote{Documentation can be found here \url{https://swimlane.gitbook.io/ngx-charts/}}
 
-and we install the module with the following command.
-\begin{lstlisting}[language=Bash]
+It can be installed with the following command.
+\begin{verbatim}
 npm install @swimlane/ngx-charts --save
-\end{lstlisting}
+\end{verbatim}
 
-Now we can start creating the logig within the Main Component.
-first we declatre the Variables which we are going to use.
-\begin{lstlisting}[language=Java]
-randomNumber: RandomNumber = new RandNumberImpl();
-statistics: PodStatistic[] = [new PodStatisticImpl()];
-multi: Series[];
-\end{lstlisting}
+Now we can start adding the business logic.
+Within the Main Component file $app.component.ts$.
+First we declatre the Variables which we are going to use.
+\lstinputlisting[language=Java, firstline=19, lastline=23]{Applikationen/frontend/src/app/app.component.ts}
 
-In the constructor, we provide our two Services as Private.
+In the constructor, we provide our two services as Private.
 
 next we create the Methods which fetches the data from the service.
-\begin{lstlisting}[language=Java]
-getNewNumber(){
-  this.random_service.getRandomNumber()
-  .subscribe(
-    data => {this.randomNumber = data;});
-}
-  
-getStatistics(){
-  this.statistic_service.getStatistics()
-  .subscribe(
-     data => {
-     this.dataSource = new MatTableDataSource<PodStatistic>(data);});
-}
+\lstinputlisting[language=Java, firstline=45, lastline=62]{Applikationen/frontend/src/app/app.component.ts}
 
-getHistory(){
-  this.statistic_service.getHistory()
-  .subscribe(
-    data =>{this.multi = data;});
-}
-\end{lstlisting}
+We also need to define a method Called $ButtonClick$ as we want to use it from the Html file. within this Method we will do nothing more that just calling all fetch methods.
+\lstinputlisting[language=Java, firstline=64, lastline=68]{Applikationen/frontend/src/app/app.component.ts}
 
-We also need to define a method Called "ButtonClick" as we want to use it from the Html file. within this Method we will do nothing more that just calling all fetch methods.
-\begin{lstlisting}[language=Java]
-buttonClick(){
-    this.getNewNumber();
-    this.getStatistics();
-    this.getHistory();
-}
-\end{lstlisting}
+From $ngOnInit$ we call only $buttonClick()$.
 
-from within ngOnInit we call only buttonClick().
-
-\begin{lstlisting}[language=Java]
-onSelect(event) {
-  console.log(event);
-}
-\end{lstlisting}
-
+then we also have a onSelect which we need ot provice for the graph;
+\lstinputlisting[language=Java, firstline=74, lastline=76]{Applikationen/frontend/src/app/app.component.ts}
+\newpage
 As a last thing in this file we need to add some configuration Variables.
-\begin{lstlisting}[language=Java]
-// Table
-displayedColumns: string[] = ['id','counter'];
-dataSource: any;
 
-// Graph
-view: any[] = [700, 400];
-showXAxis = true;
-showYAxis = true;
-gradient = false;
-showLegend = true;
-showXAxisLabel = true;
-xAxisLabel = 'Sum of all Calls';
-showYAxisLabel = true;
-yAxisLabel = 'Calls per Pod';
-timeline = true;
-autoScale = true;
-colorScheme = {
- domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-};
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=25, lastline=39]{Applikationen/frontend/src/app/app.component.ts}
 
-the Last file we need to create for the Frontend is the HTML from our component Class.
-\begin{lstlisting}[language=HTML]
-<section class="mat-typography">
+the Last file we need to create for the Frontend is the html from our component Class.
+\lstinputlisting[language=HTML]{Applikationen/frontend/src/app/app.component.html}
 
-<h1>Random Numbers</h1>
-
-<mat-card>
-  <mat-card-header>
-      <p>Id: {{randomNumber.id}}</p>
-  </mat-card-header>
-  <mat-card-content>
-      <p>Number: {{randomNumber.randNumber}}</p>
-  </mat-card-content>
-
-</mat-card>
-
-  <button mat-button (click)="buttonClick()">Get New Number</button>
-
-<mat-card>
-  <mat-card-header>
-    Statistics Table
-  </mat-card-header>
-  <mat-card-content >
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let element">{{element.id}}</td>
-      </ng-container>
-      <ng-container matColumnDef="counter">
-        <th mat-header-cell *matHeaderCellDef>Counter</th>
-        <td mat-cell *matCellDef="let element">{{element.counter}}</td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card-content>
-</mat-card>
-
-    <ngx-charts-line-chart 
-    [view]="view"
-    [scheme]="colorScheme"
-    [results]="multi"
-    [gradient]="gradient"
-    [xAxis]="showXAxis"
-    [yAxis]="showYAxis"
-    [legend]="showLegend"
-    [showXAxisLabel]="showXAxisLabel"
-    [showYAxisLabel]="showYAxisLabel"
-    [xAxisLabel]="xAxisLabel"
-    [yAxisLabel]="yAxisLabel"
-    [autoScale]="autoScale"
-    [timeline]="timeline"
-    (select)="onSelect($event)">
-    ></ngx-charts-line-chart>
-
-
-</section>
-\end{lstlisting}
-
-As next thing we can finally go through the Server side Part of the Frontend, which is from our Spring Boot Part.
+Now it is time to go through the Server side Part of the Frontend, which is from our Spring Boot frontend.
 Like we did it for all the previous Spring boot Applications, we will first create all folders and .java files.
 From within src/main/java
 \dirtree{%
@@ -323,91 +167,40 @@ From within src/main/java
 All classes under the Model Package, represent our DTOs like we had it for all the previous services.
 
 Fields from PodStat:
-\begin{lstlisting}[language=Java]
-private Long podStatID;
-private String id;
-private Long timeStamp;
-private Long counter;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=5, lastline=8]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/PodStat.java}
 
 Fields from RandomNumber:
-\begin{lstlisting}[language=Java]
-private String id;
-private Long randNumber;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=5, lastline=6]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/RandomNumber.java}
 
 Series:
-\begin{lstlisting}[language=Java]
-private String name;
-private List<SeriesItem> series;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=7, lastline=8]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/Series.java}
 
 SeriesItem:
-\begin{lstlisting}[language=Java]
-private Long name;
-private Long value;
-\end{lstlisting}
+\lstinputlisting[language=Java, firstline=5, lastline=6]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/model/SeriesItem.java}
 
-All fields of above classes must have as well their coresponsive getter and setter methods.
+All fields from above classes must have as well their coresponsive getter and setter methods.
 
-To fetch all the Data we need to declare in the file RestService.java all the methods which communicate to the Statistic Service and to the Middle Tier Service.
+To fetch all the Data we need to declare witin $RestService.java$ all the methods which communicates to Statistic Service and to Middle Tier Service.
 
-As we want to inject this Service within the Main Application we need to annotate this Class with @Service.
+As this service should be injected within Main Application we need to annotate this Class with @Service.
 
 Fields from RestService:
-\begin{lstlisting}[language=Java]
-private Map<String, String> env = System.getenv();
-private final String statURL = env.get("STAT_URL");
-private final String randNumURL = env.get("RAND_NUM_URL");
-private final String historyURL = env.get("HISTORY_URL");
-private RestTemplate restTemplate = new RestTemplate();
-\end{lstlisting}
-As one can see, we will retreive all endpoints via environment Variables which are either declared directly within the docker Container or via Kubernetes Environment Variable Configuration.
+\lstinputlisting[language=Java, firstline=16, lastline=20]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/service/RestService.java}
+
+As one can see, we will retreive all endpoints via environment Variables which are either declared directly within the docker Container or via Kubernetes Environment Variable configurations.
 
 Now we declare the methods.
-\begin{lstlisting}[language=Java]
-public List<PodStat> getStatistics() {
-	PodStat[] tmpStats = restTemplate.getForObject(statURL, PodStat[].class);
-	return Arrays.asList(tmpStats);
-}
+\lstinputlisting[language=Java, firstline=22, lastline=34]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/service/RestService.java}
 
-public RandomNumber getRandomNumber() {
-	return restTemplate.getForObject(randNumURL, RandomNumber.class);
-}
-
-public List<Series> getHistory() {
-	Series[] series = restTemplate.getForObject(historyURL, Series[].class);
-	return Arrays.asList(series);
-}
-\end{lstlisting}
-
-With this we are finished with the Rest Service File.
-
+This was the last method for  $RestService.java$.
 Within the Main Application file FrontendApplication.java we will also declare our endpoints we provide to the Angular application. Therefore we need to add the @RestController annotation besides the @SpringBootApplication which should already be in place.
+\newpage
+There is one dependency with @Autowired and this is our previously declared RestService.
+\lstinputlisting[language=Java, firstline=23, lastline=24]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/FrontendApplication.java}
 
-We need one dependency which we need to inject with @Autowired and this is our previously declared RestService;
-\begin{lstlisting}[language=Java]
-@Autowired
-private RestService restService;
-\end{lstlisting}
 
-The last thing we need to do is to declare all the endpoint Methods.
-\begin{lstlisting}[language=Java]
-@GetMapping("/statistics")
-public List<PodStat> getStatistics(){	
-	return restService.getStatistics();
-}
-
-@GetMapping("/randomNumber")
-public RandomNumber getRandomNumber(){
-	return restService.getRandomNumber();
-}
-
-@GetMapping("/history")
-public List<Series> getHistory(){
-	return restService.getHistory();
-}
-\end{lstlisting}
+Now declare all endpoint methods.
+\lstinputlisting[language=Java, firstline=26, lastline=37]{Applikationen/frontend/src/main/java/ch/toky/randgen/frontend/FrontendApplication.java}
 
 Within the root directory of the project we can place the Docker file like we did it for all the other services. Except that we now have to add another stage for the angular build.
 

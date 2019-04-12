@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: random-statistic-svc
+  labels:
+    app: rand-gen
+spec:
+  selector:
+    app: rand-gen
+    location: backend
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 7080
+    targetPort: 7080
+    nodePort: 31255
+    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: random-statistic-deployment
+  labels:
+    app: rand-gen
+    location: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rand-gen
+      location: backend
+  template:
+    metadata:
+      labels:
+        app: rand-gen
+        location: backend
+    spec:
+      containers:
+      - name: random-statistic-container
+        image: random-statistic-image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 7080

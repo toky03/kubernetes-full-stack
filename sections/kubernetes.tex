@@ -1,1 +1,98 @@
-Installing Kubernetes
+\subsection{Installing Kubernetes}
+
+To play arround and get to know Kubernetes it is recommendet to install minikube \footnote{\url{https://kubernetes.io/docs/tasks/tools/install-minikube/}} which is running inside a VM on your local machine.
+If you want to use Kubernetes on a Server and deploy PROD ready application then you have the option to rent directly a Kubernetes Cluster from a Vendor
+\begin{itemize}
+\item AWS EKS \url{https://aws.amazon.com/de/eks/}
+\item GKE Google Cloud \url{https://cloud.google.com/kubernetes-engine/}
+\item IBM Kubernetes Service \url{https://www.ibm.com/cloud/container-service}
+\end{itemize}
+
+You can also install Kubernetes on a plain server, we use ubuntu for this setup. weh use the following instruction to get this done \footnote{\url{https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux}}
+ But first we need to add the Kubernetes to our installation repository.
+\begin{verbatim}
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+\end{verbatim}
+
+\begin{verbatim}
+sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+$ sudo apt install kubeadm 
+\end{verbatim}
+
+\begin{verbatim}
+sudo swapoff -a
+\end{verbatim}
+
+Now we have Kubeadm installed, we can continue with the server setup based on the instruction from Kubernetes itself \footnote{\url{https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/}}
+
+The pod network will be Callico.
+
+\begin{verbatim}
+kubeadm init --apiserver-advertise-address=<ip-address> --pod-network-cidr=192.168.0.0/16
+\end{verbatim}
+
+Switch back to non root user and execute those commands.
+
+\begin{verbatim}
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+\end{verbatim}
+
+/proc/sys/net/bridge/bridge-nf-call-iptables to 1
+
+Now we just need to deploy the pod network.
+\begin{verbatim}
+kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+\end{verbatim}
+
+Wait until all pods are up and running.
+kubectl get pods --all-namespaces
+
+If we are using a single node cluster, we need to tell Kubernetes that it is allowed to deploy pods on the master node (which is the only node in the cluster)
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+Now we are done with the setup and we can start deployin pods to the Kubernetes cluster.
+
+\subsection{Deploy Services}
+All the Applications are running inside of a docker container and managed within a Kubernetes Pod and accessible via a Kubernetes Service where only the Frontend Service is bound to a Node Port.
+
+\textbf{Database}
+A database is always quite special for a deployment as the whole Container setup is meant to run stateless. Which means all the data is lost once a container dies. Mostly this is very bad for a database as there all the relevant data should be persisted.
+
+Docker itself provides therefore persistent Volumens which can be mounted by a Container.
+
+Within Kubernetes we create therefore a PersistentVolumeClaim \footnote{\url{https://kubernetes.io/docs/concepts/storage/persistent-volumes/}} before we start a 
+
+Deployment
+\lstinputlisting[language=Bash,firstline=16]{config-files/mysql-deployment.yml}
+
+As a pod can always vary its ip adress, we need to have a stable endpoint to access the pods.
+Specificly for this purpose, kubernetes provides services.
+Service to make the Database Pod available 
+\lstinputlisting[language=Bash,firstline=1,lastline=14]{config-files/mysql-deployment.yml}
+
+\textbf{Random Generator}
+Now we also declare the deployment for the generator service.
+Notice that we have two replicas for the generator. this is because we wand to have two diffrent ids as a source for our generator.
+\lstinputlisting[language=Bash,firstline=17]{config-files/rand-gen-deployment.yml}
+
+The corresponsing service.
+\lstinputlisting[language=Bash,lastline=14]{config-files/rand-gen-deployment.yml}
+
+\textbf{Middle Tier service}
+\lstinputlisting[language=Bash,firstline=19]{config-files/middle-tier-deployment.yml}
+The service
+\lstinputlisting[language=Bash,lastline=16]{config-files/middle-tier-deployment.yml}
+
+\textbf{Statistic Service}
+\lstinputlisting[language=Bash,firstline=19]{config-files/stat-tier-deployment.yml}
+Service
+\lstinputlisting[language=Bash,lastline=17]{config-files/stat-tier-deployment.yml}
+
+\textbf{Frontend}
+\lstinputlisting[language=Bash,firstline=18]{config-files/frontend-deployment.yml}
+
+Service:
+\lstinputlisting[language=Bash,lastline=15]{config-files/frontend-deployment.yml}

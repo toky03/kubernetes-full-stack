@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  labels:
+    app: rand-gen
+spec:
+  selector:
+    app: rand-gen
+    location: backend
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 5123
+    targetPort: 8080
+    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: rand-gen
+    location: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rand-gen
+      location: backend
+  template:
+    metadata:
+      labels:
+        app: rand-gen
+        location: backend
+    spec:
+      containers:
+      - name: frontend-container
+        image: frontend-image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080

@@ -8,11 +8,9 @@ Microservice for requesting new Numbers & Spring Boot Java \\
 Microservice for gathering Statistics & Spring Boot Java \\
 Frontend & Angular with Spring Boot \\
 Routing Server & Nginx \\
-Server OS & Ubuntu Server 18.5.1  LTS
+Server OS & Ubuntu Server 18.4.2  LTS
 \end{tabular}
 \end{table}
-
-All the Applications are Running inside of an own Docker Container and Managed within a Kubernetes Pod and accessible via a Kubernetes Service where only the Frontend Service is bound to a Node Port.
 \subsection{Model}
 The Following Picture should give an overview about the different Services and how they work with each other.
 
@@ -30,3 +28,5 @@ The Following Picture should give an overview about the different Services and h
 \draw[<->, thick] (E) to[bend left=10] (C);
 
 \end{tikzpicture}
+The random generator service creates a JSON file with an unique id and a random number. The middle tier service calls the random generator, saves the number with the id, saves it in the database and forwards it to the frontend.
+The statistic service is fetched from the frontend to deliver historic data for the graph and the table with all counts from previous calls.

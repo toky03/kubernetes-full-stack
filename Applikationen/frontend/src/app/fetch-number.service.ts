@@ -11,7 +11,6 @@ export class FetchNumberService {
   constructor(private _http: HttpClient) { }
 
   getRandomNumber(): Observable<RandomNumber>{
-
     return this._http.get<RandomNumber>('randomNumber');
   }
 }

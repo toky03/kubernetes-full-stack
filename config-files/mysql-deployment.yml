@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-svc
+  labels:
+    app: rand-gen
+spec:
+  selector:
+    app: rand-gen
+    location: backend
+  clusterIP: None
+  ports:
+  - port: 3306
+        
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-deployment
+  labels:
+    app: rand-gen
+    location: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rand-gen
+      location: backend
+  template:
+    metadata:
+      labels:
+        app: rand-gen
+        location: backend
+    spec:
+      containers:
+      - name: database-container
+        image: mysql:5.6
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        - name: MYSQL_USER
+          value: springuser
+        - name: MYSQL_PASSWORD
+          value: ThePassword
+        - name: MYSQL_DATABASE
+          value: db_example  
+        ports:
+        - containerPort: 3306
