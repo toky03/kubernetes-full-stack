@@ -18,6 +18,7 @@ FROM anapsix/alpine-java:latest
 
 COPY --from=builder /app/target/frontend-0.0.1-SNAPSHOT.jar /opt/front-tier.jar
 
+ENV JAVA_OPTS='-Xmx200m'
 
 ENV STAT_URL=http://rand-stat-tier:8080/
 

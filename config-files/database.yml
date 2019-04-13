@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     app: rand-gen
-    location: backend
+    location: database
   clusterIP: None
   ports:
   - port: 3306
@@ -19,30 +19,42 @@ metadata:
   name: database-deployment
   labels:
     app: rand-gen
-    location: backend
+    location: database
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: rand-gen
-      location: backend
+      location: database
   template:
     metadata:
       labels:
         app: rand-gen
-        location: backend
+        location: database
     spec:
       containers:
       - name: database-container
-        image: mysql:5.6
+        image: toky03/rand-database:1.0
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: password
+          valueFrom:
+            configMapKeyRef:
+              name: random-config
+              key: database.rootpassword
         - name: MYSQL_USER
-          value: springuser
+          valueFrom:
+            configMapKeyRef:
+              name: random-config
+              key: database.user
         - name: MYSQL_PASSWORD
-          value: ThePassword
+          valueFrom:
+            configMapKeyRef:
+              name: random-config
+              key: database.password
         - name: MYSQL_DATABASE
-          value: db_example  
+          valueFrom:
+            configMapKeyRef:
+               name: random-config
+               key: database.name
         ports:
         - containerPort: 3306

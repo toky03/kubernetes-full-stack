@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     app: rand-gen
-    location: backend
+    location: frontend
   type: NodePort
   ports:
   - protocol: TCP
@@ -21,22 +21,24 @@ metadata:
   name: frontend-deployment
   labels:
     app: rand-gen
-    location: backend
+    location: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: rand-gen
-      location: backend
+      location: frontend
   template:
     metadata:
       labels:
         app: rand-gen
-        location: backend
+        location: frontend
     spec:
       containers:
       - name: frontend-container
-        image: frontend-image
-        imagePullPolicy: Never
+        image: toky03/rand-front-image:1.0
+        envFrom:
+        - configMapRef:
+            name: random-config-env
         ports:
         - containerPort: 8080

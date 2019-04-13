@@ -13,6 +13,11 @@ All of them can make our life easier but as we want to dive a little bit deeper 
 
 \lstinputlisting[language=Bash]{Applikationen/database/Dockerfile}
 
+creating the docker image
+\begin{verbatim}
+docker build -t rand-database-image .
+\end{verbatim}
+
 \textbf{Create Random Generator}
 
 The Dockerfile to create the Docker image:
@@ -22,9 +27,10 @@ within the root directory of the Random Generator.
 
 the flag -t inicates that the name of the image and the dot at the end tells docker to use the Dockerfile from the current working directory.
 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker build -t rand-gen-image .
-\end{lstlisting}
+\end{verbatim}language=Bash]
+
 
 \textbf{Middle Tier Docker Image}
 \lstinputlisting[language=Bash]{Applikationen/middletier/Dockerfile}
@@ -34,9 +40,9 @@ We are using anapsix base image, as we want to keep the Docker image as small as
 Finally we can create the docker image with the following Command.
 
 Important is, we need to be in the root directory of the Projecct where also the Dockerfile is stored.
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker build -t rand-middle-image .
-\end{lstlisting}
+\end{verbatim}
 As previously mentioned, we will use multi stage builds. In this case we use a maven base image as a builder.
 Reference for using maven with Docker \url{https://hub.docker.com/_/maven/}
 
@@ -48,9 +54,9 @@ If you want to run the project on a raspberry, you would need to change the base
 
 Basically the Dockerfile for this Service looks pretty much the same as the one for the Middle tier except that we do not need to declare an environment variable for the random generator.
 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker build -t rand-stat-image .
-\end{lstlisting}
+\end{verbatim}
 
 \textbf{Frontend Service}
 
@@ -59,58 +65,54 @@ As we have one more step within the Frontend service. We need to have one more s
 
 \lstinputlisting[language=Bash]{Applikationen/frontend/Dockerfile}
 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker build -t rand-front-image .
-\end{lstlisting}
+\end{verbatim}
 
 
 \subsection{running with Docker}
 
 \textbf{Create a Network}
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker network create  -d bridge rand-network
-\end{lstlisting}
+\end{verbatim}
 
 \textbf{Start the Database Container}
 
-\begin{lstlisting}[language=Bash]
-docker run -d --name rand-gen-database \
--e MYSQL_ROOT_PASSWORD='password' \
--e MYSQL_USER='random_user' \
--e MYSQL_PASSWORD='random_password' \
--e MYSQL_DATABASE='rand_numbers' \
+\begin{verbatim}
+docker run -d --name rand-database \
 --network rand-network \
-mysql:5.6
-\end{lstlisting}
+rand-database-image
+\end{verbatim}
 
 \textbf{Start the Random Generator App}
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker run -d --name=rand-gen-tier \
 --network rand-network \
 rand-gen-image
-\end{lstlisting}
+\end{verbatim}
 
 \textbf{Start the middle tier Application}
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker run -d --name rand-middle-tier \
 --network rand-network \
 rand-middle-image
-\end{lstlisting}
+\end{verbatim}
 
 \textbf{Starting the Stat Tier Application}
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker run -d \
 --name rand-stat-tier \
 --network rand-network \ 
 rand-stat-image
-\end{lstlisting}
+\end{verbatim}
 
 \textbf{Start the Frontend Service}
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 docker run -d -p 8080:8080 \
 --network rand-network \
 --name rand-frontend \
 rand-front-image
-\end{lstlisting}
+\end{verbatim}
 
 All the default environment Variables are already set within the Dockerfiles therefore we can startup all the services one by one.

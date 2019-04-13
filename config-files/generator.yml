@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     app: rand-gen
-    location: backend
+    location: generator
   ports:
   - protocol: TCP
     port: 5050
@@ -20,22 +20,21 @@ metadata:
   name: random-generator-deployment
   labels:
     app: rand-gen
-    location: backend
+    location: generator
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: rand-gen
-      location: backend
+      location: generator
   template:
     metadata:
       labels:
         app: rand-gen
-        location: backend
+        location: generator
     spec:
       containers:
       - name: random-generator-container
-        image: random-generator-image
-        imagePullPolicy: Never
+        image: toky03/rand-gen-image:1.0
         ports:
         - containerPort: 5050

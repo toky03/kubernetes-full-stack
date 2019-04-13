@@ -7,12 +7,12 @@ metadata:
 spec:
   selector:
     app: rand-gen
-    location: backend
+    location: stat
   type: NodePort
   ports:
   - protocol: TCP
-    port: 7080
-    targetPort: 7080
+    port: 8080
+    targetPort: 8080
     nodePort: 31255
     
 ---
@@ -22,22 +22,24 @@ metadata:
   name: random-statistic-deployment
   labels:
     app: rand-gen
-    location: backend
+    location: stat
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: rand-gen
-      location: backend
+      location: stat
   template:
     metadata:
       labels:
         app: rand-gen
-        location: backend
+        location: stat
     spec:
       containers:
       - name: random-statistic-container
-        image: random-statistic-image
-        imagePullPolicy: Never
+        image: toky03/rand-stat-image:1.0
+        envFrom:
+        - configMapRef:
+            name: random-config-env
         ports:
-        - containerPort: 7080
+        - containerPort: 8080

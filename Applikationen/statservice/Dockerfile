@@ -10,6 +10,8 @@ FROM anapsix/alpine-java:latest
 
 COPY --from=builder /app/target/statservice-0.0.1-SNAPSHOT.jar /opt/stat-tier.jar
 
+ENV JAVA_OPTS='-Xmx200m'
+
 ENV SPRING_DATASOURCE_URL=jdbc:mysql://rand-gen-database/rand_numbers
 
 ENV SPRING_DATASOURCE_USERNAME=random_user

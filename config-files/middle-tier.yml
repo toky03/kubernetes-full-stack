@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     app: rand-gen
-    location: backend
+    location: middle
   type: NodePort
   ports:
   - protocol: TCP
@@ -22,22 +22,24 @@ metadata:
   name: middle-tier-controller
   labels:
     app: rand-gen
-    location: backend
+    location: middle
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: rand-gen
-      location: backend
+      location: middle
   template:
     metadata:
       labels:
         app: rand-gen
-        location: backend
+        location: middle
     spec:
       containers:
       - name: random-controller-container
-        image: random-controller-image
-        imagePullPolicy: Never
+        image: toky03/rand-middle-image:1.0
+        envFrom:
+        - configMapRef:
+            name: random-config-env
         ports:
         - containerPort: 7070
