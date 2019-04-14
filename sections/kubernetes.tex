@@ -1,5 +1,6 @@
 \subsection{Installing Kubernetes}
 
+
 To play arround and get to know Kubernetes it is recommendet to install minikube \footnote{\url{https://kubernetes.io/docs/tasks/tools/install-minikube/}} which is running inside a VM on your local machine.
 If you want to use Kubernetes on a Server and deploy PROD ready application then you have the option to rent directly a Kubernetes Cluster from a Vendor
 \begin{itemize}
@@ -47,9 +48,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 Now we just need to deploy the pod network.
 \begin{verbatim}
 kubectl apply -f \
-https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+https://docs.projectcalico.org/v3.3/getting-started/
+kubernetes/installation/hosted/rbac-kdd.yaml
 kubectl apply -f \
-https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+https://docs.projectcalico.org/v3.3/getting-started/
+kubernetes/installation/hosted/
+kubernetes-datastore/calico-networking/1.7/calico.yaml
 \end{verbatim}
 
 Wait until all pods are up and running.
@@ -77,8 +81,14 @@ after that we can user \texttt{kubectl get pods} to show the all pods within the
 \textbf{Configuration}
 
 \textbf{Secrets}
-Secrets \footnote{\url{https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/}}
-Secret file for the whole application.
+As Secrets\footnote{\url{https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/}} can only store base64 encoded values, we need to convert all our values with base64 with the following commands:
+\begin{verbatim}
+echo -n 'random_user' | base64
+echo -n 'random_password' | base64
+echo -n 'password' | base64
+\end{verbatim}
+and then save the result in the secrets file as shown below.
+Secret file with values for the whole application.
 \lstinputlisting[language=Bash]{config-files/secret.yml}
 
 Environment Variable configuration for the whole application.
