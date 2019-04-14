@@ -38,19 +38,19 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: random-config
-              key: database.rootpassword
+            secretKeyRef:
+              name: rand-secret
+              key: databaseRootPassword
         - name: MYSQL_USER
           valueFrom:
-            configMapKeyRef:
-              name: random-config
-              key: database.user
+            secretKeyRef:
+              name: rand-secret
+              key: databaseUsername
         - name: MYSQL_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: random-config
-              key: database.password
+            secretKeyRef:
+              name: rand-secret
+              key: databasePassword
         - name: MYSQL_DATABASE
           valueFrom:
             configMapKeyRef:

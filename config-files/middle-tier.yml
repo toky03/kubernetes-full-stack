@@ -8,12 +8,10 @@ spec:
   selector:
     app: rand-gen
     location: middle
-  type: NodePort
   ports:
   - protocol: TCP
     port: 7070
     targetPort: 7070
-    nodePort: 31234
     
 ---
 apiVersion: apps/v1
@@ -41,5 +39,16 @@ spec:
         envFrom:
         - configMapRef:
             name: random-config-env
+        env:
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rand-secret
+              key: databaseUsername
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rand-secret
+              key: databasePassword
         ports:
         - containerPort: 7070

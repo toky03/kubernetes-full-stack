@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.27)  13 APR 2019 16:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.27)  14 APR 2019 16:32
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -774,48 +774,41 @@ ubernetes-[]on-[]ubuntu-[]18-[]04-[]bionic-[]beaver-[]linux$[]|
  []
 
 
-Overfull \hbox (74.99634pt too wide) in paragraph at lines 15--15
-[]\OT1/cmtt/m/n/10 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gp
-g | sudo apt-key add[] 
+Overfull \hbox (158.9956pt too wide) in paragraph at lines 53--53
+[]\OT1/cmtt/m/n/10 https://docs.projectcalico.org/v3.3/getting-started/kubernet
+es/installation/hosted/rbac-kdd.yaml[] 
  []
 
 
-Overfull \hbox (64.49643pt too wide) in paragraph at lines 20--20
-[]\OT1/cmtt/m/n/10 sudo apt-add-repository "deb http://apt.kubernetes.io/ kuber
-netes-xenial main"[] 
+Overfull \hbox (374.24373pt too wide) in paragraph at lines 53--53
+[]\OT1/cmtt/m/n/10 https://docs.projectcalico.org/v3.3/getting-started/kubernet
+es/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml[]
+ 
  []
 
-
-Overfull \hbox (122.24593pt too wide) in paragraph at lines 32--32
-[]\OT1/cmtt/m/n/10 kubeadm init --apiserver-advertise-address=<ip-address> --po
-d-network-cidr=192.168.0.0/16[] 
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
+[][][][]$\OT1/cmtt/m/n/8 https : / / kubernetes . io / docs / tasks / inject-[]
+data-[]application /
  []
 
-
-Overfull \hbox (248.24483pt too wide) in paragraph at lines 48--48
-[]\OT1/cmtt/m/n/10 kubectl apply -f https://docs.projectcalico.org/v3.3/getting
--started/kubernetes/installation/hosted/rbac-kdd.yaml[] 
+(./config-files/secret.yml) (./config-files/config-env.yml) [28]
+(./config-files/pv-example/pv-claim.yml)
+(./config-files/pv-example/pod-pv-claim.yml [29])
+Overfull \hbox (145.74574pt too wide) in paragraph at lines 104--105
+[]$\OT1/cmtt/m/n/10 https : / / kubernetes . io / docs / tasks / configure-[]po
+d-[]container / configure-[]persistent-[]volume-[]storage/$[] 
  []
 
-
-Overfull \hbox (463.49295pt too wide) in paragraph at lines 48--48
-[]\OT1/cmtt/m/n/10 kubectl apply -f https://docs.projectcalico.org/v3.3/getting
--started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/
-1.7/calico.yaml[] 
- []
-
-[27] (./config-files/mysql-deployment.yml) (./config-files/mysql-deployment.yml
-[28]) (./config-files/rand-gen-deployment.yml)
-(./config-files/rand-gen-deployment.yml) [29]
-(./config-files/middle-tier-deployment.yml)
-(./config-files/middle-tier-deployment.yml)
-(./config-files/stat-tier-deployment.yml [30])
-(./config-files/stat-tier-deployment.yml)
-(./config-files/frontend-deployment.yml [31])
-(./config-files/frontend-deployment.yml)) [32]
+(./config-files/database.yml) [30] (./config-files/database.yml)
+(./config-files/generator.yml) (./config-files/generator.yml [31])
+(./config-files/middle-tier.yml) (./config-files/middle-tier.yml [32])
+(./config-files/stat-tier.yml) (./config-files/stat-tier.yml)
+(./config-files/frontend.yml [33]) (./config-files/frontend.yml)) [34]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 85.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 85.
- (build/kubernetes-full-stack.aux)
+
+(build/kubernetes-full-stack.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 85.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 85.
 Package rerunfilecheck Info: File `kubernetes-full-stack.out' has not changed.
@@ -823,10 +816,10 @@ Package rerunfilecheck Info: File `kubernetes-full-stack.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 85.
  ) 
 Here is how much of TeX's memory you used:
- 20090 strings out of 492982
- 393919 string characters out of 6134895
+ 20227 strings out of 492982
+ 395868 string characters out of 6134895
  648191 words of memory out of 5000000
- 22397 multiletter control sequences out of 15000+600000
+ 22434 multiletter control sequences out of 15000+600000
  8231 words of font info for 30 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,8n,67p,425b,1933s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -844,10 +837,10 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></u
 sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on build/kubernetes-full-stack.pdf (32 pages, 283581 bytes).
+Output written on build/kubernetes-full-stack.pdf (34 pages, 296002 bytes).
 PDF statistics:
- 1191 PDF objects out of 1200 (max. 8388607)
- 1130 compressed objects within 12 object streams
- 759 named destinations out of 1000 (max. 500000)
+ 1309 PDF objects out of 1440 (max. 8388607)
+ 1245 compressed objects within 13 object streams
+ 847 named destinations out of 1000 (max. 500000)
  141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

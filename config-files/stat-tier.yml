@@ -8,12 +8,10 @@ spec:
   selector:
     app: rand-gen
     location: stat
-  type: NodePort
   ports:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-    nodePort: 31255
     
 ---
 apiVersion: apps/v1

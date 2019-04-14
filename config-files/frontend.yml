@@ -8,7 +8,7 @@ spec:
   selector:
     app: rand-gen
     location: frontend
-  type: NodePort
+  type: NodePort # make the service accessible from outside
   ports:
   - protocol: TCP
     port: 5123

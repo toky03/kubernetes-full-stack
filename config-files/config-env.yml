@@ -6,8 +6,6 @@ metadata:
   namespace: default
 data:
   SPRING_DATASOURCE_URL: jdbc:mysql://database-svc:3306/rand_numbers
-  SPRING_DATASOURCE_USERNAME: random_user
-  SPRING_DATASOURCE_PASSWORD: random_password
   STAT_URL: http://random-statistic-svc:8080/
   RAND_NUM_URL: http://middle-tier-svc:7070/
   HISTORY_URL: http://random-statistic-svc:8080/history/

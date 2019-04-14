@@ -22,7 +22,7 @@ metadata:
     app: rand-gen
     location: generator
 spec:
-  replicas: 2
+  replicas: 2 # to showcase diffrent generator ids
   selector:
     matchLabels:
       app: rand-gen
