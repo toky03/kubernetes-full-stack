@@ -40,15 +40,15 @@ spec:
         - configMapRef:
             name: random-config-env
         env:
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: rand-secret
-              key: databaseUsername
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: rand-secret
-              key: databasePassword
+          - name: SPRING_DATASOURCE_USERNAME 
+            valueFrom:
+              secretKeyRef:
+                name: rand-secret-file
+                key: username.txt
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rand-secret-file
+                key: password.txt
         ports:
         - containerPort: 7070

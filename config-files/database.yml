@@ -13,7 +13,7 @@ spec:
   - port: 3306
         
 ---
-apiVersion: apps/v1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: database-deployment
@@ -33,28 +33,28 @@ spec:
         location: database
     spec:
       containers:
-      - name: database-container
-        image: toky03/rand-database:1.0
+      - name: database
+        image: mysql:5.6
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: rand-secret
-              key: databaseRootPassword
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: rand-secret
-              key: databaseUsername
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: rand-secret
-              key: databasePassword
-        - name: MYSQL_DATABASE
-          valueFrom:
-            configMapKeyRef:
-               name: random-config
-               key: database.name
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rand-secret-file
+                key: rootpassword.txt
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: rand-secret-file
+                key: username.txt
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rand-secret-file
+                key: password.txt
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: random-config-env
+                key: MYSQL_DATABASE
         ports:
         - containerPort: 3306

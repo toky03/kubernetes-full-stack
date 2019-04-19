@@ -5,10 +5,10 @@ metadata:
   creationTimestamp: 2019-04-13T13:31:07+00:00
   namespace: default
 data:
-  SPRING_DATASOURCE_URL: jdbc:mysql://database-svc:3306/rand_numbers
+  SPRING_DATASOURCE_URL: jdbc:mysql://database-svc:3306/rand_nums
   STAT_URL: http://random-statistic-svc:8080/
   RAND_NUM_URL: http://middle-tier-svc:7070/
   HISTORY_URL: http://random-statistic-svc:8080/history/
   RANDOM_GENERATOR_URL: http://random-generator-svc:5050/
-
+  MYSQL_DATABASE: rand_nums
   
