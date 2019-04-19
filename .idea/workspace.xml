@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73d2c34f-4f54-45bb-a793-87c8c55dfccf" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Applikationen/database/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Applikationen/database/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kubernetes-full-stack.aux" beforeDir="false" afterPath="$PROJECT_DIR$/build/kubernetes-full-stack.aux" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kubernetes-full-stack.log" beforeDir="false" afterPath="$PROJECT_DIR$/build/kubernetes-full-stack.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kubernetes-full-stack.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/kubernetes-full-stack.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kubernetes-full-stack.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/build/kubernetes-full-stack.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kubernetes-full-stack.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/kubernetes-full-stack.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sections/docker.tex" beforeDir="false" afterPath="$PROJECT_DIR$/sections/docker.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sections/kubernetes.tex" beforeDir="false" afterPath="$PROJECT_DIR$/sections/kubernetes.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,8 +16,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="285">
-                <caret line="19" column="23" lean-forward="true" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+              <first_editor relative-caret-position="210">
+                <caret line="14" column="84" lean-forward="true" selection-start-line="14" selection-start-column="84" selection-end-line="14" selection-end-column="84" />
               </first_editor>
               <second_editor />
             </state>
@@ -128,8 +120,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="285">
-            <caret line="19" column="23" lean-forward="true" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+          <first_editor relative-caret-position="210">
+            <caret line="14" column="84" lean-forward="true" selection-start-line="14" selection-start-column="84" selection-end-line="14" selection-end-column="84" />
           </first_editor>
           <second_editor />
         </state>

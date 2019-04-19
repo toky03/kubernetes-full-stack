@@ -20,3 +20,6 @@ The Source files are in the folder Applikationen.
 ## Complete Instruction
 The full instruction can be found under build in the file kubernetes-full-stack.pdf.
 
+## Kubernetes yaml files
+
+All Files to create the Resources are stored in the folder config-files.
