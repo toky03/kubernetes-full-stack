@@ -10,6 +10,8 @@ FROM anapsix/alpine-java:latest
 
 COPY --from=builder /app/target/middletier-0.0.1-SNAPSHOT.jar /opt/middle-tier.jar
 
+# limit memory space
+
 ENV JAVA_OPTS='-Xmx200m'
 
 ENV SPRING_DATASOURCE_URL=jdbc:mysql://rand-gen-database:3306/rand_numbers
