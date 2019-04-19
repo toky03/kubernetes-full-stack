@@ -7,23 +7,27 @@ If you want to use Kubernetes on a Server and deploy PROD ready application then
 \item AWS EKS \url{https://aws.amazon.com/de/eks/}
 \item GKE Google Cloud \url{https://cloud.google.com/kubernetes-engine/}
 \item IBM Kubernetes Service \url{https://www.ibm.com/cloud/container-service}
+\item etc ...
 \end{itemize}
 
-You can also install Kubernetes on a plain server, we use ubuntu for this setup. weh use the following instruction to get this done \footnote{\url{https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux}}
+You can also install Kubernetes on a plain server, we use ubuntu for this setup. Under the following link you can find the source for the following installation instruction\footnote{\url{https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux}}
+
+Everything with a \# in front of the command means this is executed as root and everything with \$ means it is executed as a regular user.
+
  But first we need to add the Kubernetes to our installation repository.
 \begin{verbatim}
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg \ 
-| sudo apt-key add
+# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg \ 
+| apt-key add
 \end{verbatim}
 
 \begin{verbatim}
-sudo apt-add-repository \
+# apt-add-repository \
 "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-$ sudo apt install kubeadm 
+# apt install kubeadm 
 \end{verbatim}
 
 \begin{verbatim}
-sudo swapoff -a
+# swapoff -a
 \end{verbatim}
 
 Now we have Kubeadm installed, we can continue with the server setup based on the instruction from Kubernetes itself \footnote{\url{https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/}}
@@ -31,48 +35,47 @@ Now we have Kubeadm installed, we can continue with the server setup based on th
 The pod network will be Callico.
 
 \begin{verbatim}
-kubeadm init --apiserver-advertise-address=<ip-address> \
+# kubeadm init --apiserver-advertise-address=<ip-address> \
 --pod-network-cidr=192.168.0.0/16
 \end{verbatim}
 
 Switch back to non root user and execute those commands.
 
 \begin{verbatim}
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 \end{verbatim}
 
-/proc/sys/net/bridge/bridge-nf-call-iptables to 1
 
 Now we just need to deploy the pod network.
 \begin{verbatim}
-kubectl apply -f \
+$ kubectl apply -f \
 https://docs.projectcalico.org/v3.3/getting-started/
 kubernetes/installation/hosted/rbac-kdd.yaml
-kubectl apply -f \
+$ kubectl apply -f \
 https://docs.projectcalico.org/v3.3/getting-started/
 kubernetes/installation/hosted/
 kubernetes-datastore/calico-networking/1.7/calico.yaml
 \end{verbatim}
 
 Wait until all pods are up and running.
-kubectl get pods --all-namespaces
+\texttt{kubectl get pods --all-namespaces}
 
 If we are using a single node cluster, we need to tell Kubernetes that it is allowed to deploy pods on the master node (which is the only node in the cluster)
 \begin{verbatim}
-kubectl taint nodes --all node-role.kubernetes.io/master-
+$ kubectl taint nodes --all node-role.kubernetes.io/master-
 \end{verbatim}
 
-Now we are done with the setup and we can start deployin pods to the Kubernetes cluster.
-
+Now we are done with the setup and we can start deploying pods to the Kubernetes cluster.
+\newpage
 \subsection{Deploy Services}
 
 \textbf{Kubernetes Commands}
 
-Kubernetes is managing all entities according to specifications. Which means we need to declarare our desired state and kubernetes will do all the magig for us and it will also constantly check if the actual state is matching with the desired state and adjust if neccessary.
-kubectl is used to configure kubernetes \footnote{\url{https://kubernetes.io/docs/reference/kubectl/overview/}}.
-in our case we deslare all our desired states within yaml files and post them via \texttt{kubectl create -f <filename.yml>} to kubernetes.
+Kubernetes is managing all entities according to specifications. Which means we need to declarare our desired state and kubernetes will do all the magic for us. Furthermore, it will also constantly check if the actual state is matching with the desired state and adjust if neccessary.
+\texttt{kubectl} is used to configure kubernetes \footnote{\url{https://kubernetes.io/docs/reference/kubectl/overview/}}.
+In our case we declare all our desired states within yaml files and post them via \texttt{kubectl create -f <filename.yml>} to kubernetes.
 the create command means that the declared ressources in the yaml file $Deployment$, $Service$, $Secret$, $ConfigMap$ needs to be created. the $-f$ flag means it should read it from the following file.
 
 after that we can user \texttt{kubectl get pods} to show the all pods within the default namespace and \texttt{kubectl get svc} to show all services.
@@ -81,7 +84,8 @@ after that we can user \texttt{kubectl get pods} to show the all pods within the
 \textbf{Configuration}
 
 \textbf{Secrets}
-As Secrets\footnote{\url{https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/}} can only store base64 encoded values, we need to convert all our values with base64 with the following commands:
+Secrets\footnote{\url{https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/}} are a special construct within Kubernetes to save credentials like username and passwords. 
+For our application, we create for each item a seperate file with the following commands.
 \begin{verbatim}
 echo -n 'rnduser' > ./username.txt
 echo -n 'rndpwd' > ./password.txt
@@ -96,54 +100,53 @@ kubectl create secret generic rand-secret-file \
 --from-file=./rootpassword.txt
 \end{verbatim}
 
-and then save the result in the secrets file as shown below.
-Secret file with values for the whole application.
-\lstinputlisting[language=Bash]{config-files/secret.yml}
+This created the secret with the name $rand-secret-file$ for us.
+
+Another very helpful item within Kubernetes are $Config Maps$ It is more or less the same as a secret but not with hidden items.
+We use a $Config Map$ to manage our Environment Variables for our Application.
 
 Environment Variable configuration for the whole application.
 \lstinputlisting[language=Bash]{config-files/config-env.yml}
 
-All the Applications are running inside of a docker container and managed within a Kubernetes Pod and accessible via a Kubernetes Service where only the Frontend Service is bound to a Node Port.
+All the Applications are running inside of a docker container and are managed within a Kubernetes Pod (which is the atomar unit of Kubernetes). Pods can go down and restart if for example something went wrong within the pod or as well in case of re-deployments. In such a case a Pod receives a new IP. But we need to have a stable Endpoint where we can access the Pod and this is achieved via a Service. Services have a stable endpoint where we can define a name which will be resolved by kubernetes internal dns. We can then give each Service such a name and we can access the Service from pods (if they have the right labels \footnote{\url{https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/}}).There is one special Service we have and this is our Frontend service. We need to make the Service available from outside the cluster. In kubernetes we can therefore declare the Service type as $NodePort$ which means the port from the Service will then be allocated to localhost from the host node. If we are running it on a multi node cluster the port will be the same on all nodes.
 
 \textbf{Database}
 A database is always quite special for a deployment as the whole Container setup is meant to run stateless. Which means all the data is lost once a container dies. Mostly this is very bad for a database as there all the relevant data should be persisted.
 
 Docker itself provides therefore persistent Volumens which can be mounted by a Container.
 
-Within Kubernetes we create therefore a PersistentVolume \footnote{\url{https://kubernetes.io/docs/concepts/storage/persistent-volumes/}} to request a persisten Volume. Kubernetes will then search for a persistent Volume which would satisfie the requirements from the claim and allocates it to the claim.
+Within Kubernetes we create therefore a PersistentVolume \footnote{\url{https://kubernetes.io/docs/concepts/storage/persistent-volumes/}}. A Pod can then have a persistentVolumeClaim. Kubernetes will then search for a persistent Volume which would satisfie the requirements from the claim and allocates it to the claim.
 
 A pod can then be linked to a persistent volume via the persistent volume claim.
 In the following yaml file we declare first a Persistent volume and afterwards the persistent volume claim.
 \lstinputlisting[language=Bash]{config-files/pv-example/pv-claim.yml}
 
-Within the pod we would then link the pod to the pv claim via the following arguments within the containers: argument from the mysql deployment.
+Within the Pod we would then link the pod to the pv claim via the following arguments.
 \lstinputlisting[language=Bash]{config-files/pv-example/pod-pv-claim.yml}
 Nevertheless, this is not realy required for our application because we only need the database as a provisional storage.
 
-A more detailed example from Kubernetes can be found under this link \url{https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/}
+A more detailed example from Kubernetes can be found under this link \footnote{\url{https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/}}
 
-Deployment
+\textbf{Deployment}
 \lstinputlisting[language=Bash,firstline=16]{config-files/database.yml}
 
-As a pod can always vary its ip adress, we need to have a stable endpoint to access the pods.
-Specificly for this purpose, kubernetes provides services.
-Service to make the Database Pod available 
+
 \lstinputlisting[language=Bash,lastline=13]{config-files/database.yml}
 
 \textbf{Random Generator}
 Now we also declare the deployment for the generator service.
-Notice that we have two replicas for the generator. this is because we wand to have two diffrent ids as a source for our generator.
+Notice that we have two replicas for the generator. this is because we want to have two diffrent ids as a source for our generator.
 \lstinputlisting[language=Bash,firstline=17]{config-files/generator.yml}
 
 The corresponsing service.
 \lstinputlisting[language=Bash,lastline=14]{config-files/generator.yml}
 
-\textbf{Middle Tier service}
+\textbf{Middle Tier}
 \lstinputlisting[language=Bash,firstline=17]{config-files/middle-tier.yml}
 The service
 \lstinputlisting[language=Bash,lastline=14]{config-files/middle-tier.yml}
 
-\textbf{Statistic Service}
+\textbf{Statistic Tier}
 \lstinputlisting[language=Bash,firstline=17]{config-files/stat-tier.yml}
 Service
 \lstinputlisting[language=Bash,lastline=14]{config-files/stat-tier.yml}
@@ -153,3 +156,18 @@ Service
 
 Service:
 \lstinputlisting[language=Bash,lastline=15]{config-files/frontend.yml}
+
+With the command \texttt{kubectl get svc} we will get all the Services and we should see that the frontend-svc should have the type NodePort.
+Now we can access the Application via the Ip address of our node and this port number.
+
+\textbf{Deleting the whole Application}
+To remove all the configuration and services we can run the following commands and everything should be gone.
+\begin{verbatim}
+kubectl delete -f frontend.yml
+kubectl delete -f stat-tier.yml
+kubectl delete -f middle-tier.yml
+kubectl delete -f generator.yml
+kubectl delete -f database.yml
+kubeclt delete -f config-env.yml
+kubectl delete secret rand-secret-file
+\end{verbatim}

@@ -1,15 +1,18 @@
 \subsection{Creating the Docker Images}
 As we were always using multi stage builds we are now able to build the Project directly with Docker without any manual execution of some maven build commands or angular build commands.
-It is mostly important for the build from our Frontend, as we do not need to run ng build and after that mvn clean package.
+Mainly for our Frontend it makes or live easier, as we do not need to run ng build and after that mvn clean package.
 With this we can also always be sure to have the latest version of the jar file, as we are building the jar together with the Docker Image.
 
 There is one huge disadvantage. As every docker Container has its own environment and we cannot mount a hostpath during the build, we need to download all the dependencies for each build which takes quite some time.
 
-As our builds will run every time in a new Container, it needs to load all dependencies each time we are going to build the Project. This takes a lot of time and there are pluginswhich makes this much easier.
+This takes a lot of time. There are plugins which makes this much easier.
 For example the spotify docker Maven plugin which would enable us to build the Dockerfile directly with maven \footnote{https://github.com/spotify/docker-maven-plugin}.
 There is also a maven plugin to execute the angular build before building the jar file \footnote{https://github.com/eirslett/frontend-maven-plugin}.
-All of them can make our life easier but as we want to dive a little bit deeper into Docker, we will do it wit plain Dockerfiles.
+All of them can make our life easier but as we want to dive a little bit deeper into Docker, we will do it with plain Dockerfiles.
+
+Following we describe the Dockerfiles for each service and then as well how to build the Dockerimage.
 \textbf{Database}
+the Dockerfile can be stored in a seperate empty folder as we do not need to $ADD$ or $COPY$ any source files.
 
 \lstinputlisting[language=Bash]{Applikationen/database/Dockerfile}
 
@@ -17,25 +20,24 @@ creating the docker image
 \begin{verbatim}
 docker build -t rand-database-image .
 \end{verbatim}
+\newpage
 
-\textbf{Create Random Generator}
+\textbf{Generator}
 
-The Dockerfile to create the Docker image:
+Wihin the root directory of the generator application.
 \lstinputlisting[language=Bash]{Applikationen/generator/Dockerfile}
 
-within the root directory of the Random Generator.
-
-the flag -t inicates that the name of the image and the dot at the end tells docker to use the Dockerfile from the current working directory.
+The flag -t inicates that the name of the image and the dot at the end tells docker to use the Dockerfile from the current working directory.
 
 \begin{verbatim}
 docker build -t rand-gen-image .
-\end{verbatim}language=Bash]
-
+\end{verbatim}
 
 \textbf{Middle Tier Docker Image}
 \lstinputlisting[language=Bash]{Applikationen/middletier/Dockerfile}
 
-We are using anapsix base image, as we want to keep the Docker image as small as possible.
+We are using anapsix \footnote{\url{https://hub.docker.com/r/anapsix/alpine-java/}} base image, as we want to keep the Docker image as small as possible. This will also be the case for all the following Java Dockerfiles.
+As you can also see, we are limiting the memory space for all Java applications. This is because the JVM would still see the whole Memory Space on the node and not one its own container. As a result of this it could claim to much memory space for one single service and this is what we want to avoid.
 
 Finally we can create the docker image with the following Command.
 
@@ -43,10 +45,10 @@ Important is, we need to be in the root directory of the Projecct where also the
 \begin{verbatim}
 docker build -t rand-middle-image .
 \end{verbatim}
-As previously mentioned, we will use multi stage builds. In this case we use a maven base image as a builder.
-Reference for using maven with Docker \url{https://hub.docker.com/_/maven/}
+As previously mentioned, we will use multi stage builds. In this case we use a maven \footnote{\url{https://hub.docker.com/_/maven/}} base image as a builder.
+\newpage
 
-\textbf{Statistic Service}
+\textbf{Statistic Service Docker Image}
 For the image itself we are using anapsix base image as this is currently the smallest possible java base image \url{https://hub.docker.com/r/anapsix/alpine-java/dockerfile/}
 If you want to run the project on a raspberry, you would need to change the base image to hypriot as a Raspberry has a diffret underlaying CPU architecture which is based on ARM \footnote{https://github.com/hypriot/rpi-java}
 
@@ -57,10 +59,11 @@ Basically the Dockerfile for this Service looks pretty much the same as the one 
 \begin{verbatim}
 docker build -t rand-stat-image .
 \end{verbatim}
+\newpage
 
-\textbf{Frontend Service}
+\textbf{Frontend Service Docker Image}
 
-As we have one more step within the Frontend service. We need to have one more stage. As we need node package manager to build the angular application we are goint to use a node.js docker base image \footnote{ Node Repository Docker hub \url{https://hub.docker.com/_/node/}}.
+As we have one more step within the Frontend service. We need to have one more stage. We need node package manager to build the angular application we are goint to use a node.js docker base image \footnote{ Node Repository Docker hub \url{https://hub.docker.com/_/node/}}.
 
 
 \lstinputlisting[language=Bash]{Applikationen/frontend/Dockerfile}
@@ -68,9 +71,11 @@ As we have one more step within the Frontend service. We need to have one more s
 \begin{verbatim}
 docker build -t rand-front-image .
 \end{verbatim}
-
+\newpage
 
 \subsection{running with Docker}
+
+If you wanted to skip the whole development part and want to start directly with running the docker files, you can use the prebuilt docker images on docker Hub \footnote{\url{https://hub.docker.com/u/toky03}}. Therefore, just put toky03/ in front of every image name.
 
 \textbf{Create a Network}
 \begin{verbatim}
@@ -116,3 +121,5 @@ rand-front-image
 \end{verbatim}
 
 All the default environment Variables are already set within the Dockerfiles therefore we can startup all the services one by one.
+
+The only setup you need to check is if port 8080 on localhost is already allocatd. If this is the case, you need to bind the frontend container to another port than 8080 for example with $-p 8081:8080$.

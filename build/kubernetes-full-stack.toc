@@ -10,7 +10,7 @@
 \contentsline {subsection}{\numberline {3.5}Frontend}{14}{subsection.3.5}
 \contentsline {section}{\numberline {4}Docker}{22}{section.4}
 \contentsline {subsection}{\numberline {4.1}Creating the Docker Images}{22}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}running with Docker}{25}{subsection.4.2}
-\contentsline {section}{\numberline {5}Kubernetes}{27}{section.5}
-\contentsline {subsection}{\numberline {5.1}Installing Kubernetes}{27}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}Deploy Services}{28}{subsection.5.2}
+\contentsline {subsection}{\numberline {4.2}running with Docker}{27}{subsection.4.2}
+\contentsline {section}{\numberline {5}Kubernetes}{28}{section.5}
+\contentsline {subsection}{\numberline {5.1}Installing Kubernetes}{28}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Deploy Services}{30}{subsection.5.2}
