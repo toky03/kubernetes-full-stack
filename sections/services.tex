@@ -1,14 +1,15 @@
 \subsection{Database}
 In the further sections we will use a plain mysql docker container as a database. In order to use the Application completely locally, a local mySQL database has to be installed and a schema for the random generator application needs to be provided for a specific randgenuser.
 If there is not yet a local mySQL database installed it can be done with the following command:
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 sudo apt-get update
 sudo apt-get install mysql-server
-\end{lstlisting}
+\end{verbatim}
+
 After the installation log in to MySQL as root. 
-\begin{lstlisting}[language=Bash]
+\begin{verbatim}
 sudo mysql
-\end{lstlisting}
+\end{verbatim}
 Now the Database and the user can be created and permissions to the respective schema will be given.
 \lstinputlisting[language=SQL]{Applikationen/database/setup.sql}
 With this, the Database is ready to used by the Random Generator Example from localhost.

@@ -83,10 +83,19 @@ after that we can user \texttt{kubectl get pods} to show the all pods within the
 \textbf{Secrets}
 As Secrets\footnote{\url{https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/}} can only store base64 encoded values, we need to convert all our values with base64 with the following commands:
 \begin{verbatim}
-echo -n 'random_user' | base64
-echo -n 'random_password' | base64
-echo -n 'password' | base64
+echo -n 'rnduser' > ./username.txt
+echo -n 'rndpwd' > ./password.txt
+echo -n 'rootrndpwd' > ./rootpassword.txt
 \end{verbatim}
+
+Then create the secret with the following command:
+\begin{verbatim}
+kubectl create secret generic rand-secret-file \
+--from-file=./username.txt \
+--from-file=./password.txt \
+--from-file=./rootpassword.txt
+\end{verbatim}
+
 and then save the result in the secrets file as shown below.
 Secret file with values for the whole application.
 \lstinputlisting[language=Bash]{config-files/secret.yml}
