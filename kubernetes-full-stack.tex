@@ -53,6 +53,11 @@
 This Introduction should give an end to end overview to develop a sample Application with multiple microservices and a Databases completely on Kubernetes.Furthermore, the application should run on a local machine as well as on simple Docker containers witout any manual changes.
 The Application generates random numbers, saves them with a Timestamp on a database, displays the new number on a Frontend and also shows graphs from previous andom numbers based on their producerservices Id.
 The goal of the whole application is primarly to develop an end to end Application fully cloud native wit all configurations based on requirements for cloud native applications. The second goal is to show graphically the self healing process of Kubernetes, namely when we delete a random generator Pod, it should automatically create a new Random generator Pod with a new Id.
+
+You can go through this Tutorial from Chapter to Chapter if you want to know the Development, Docker and Kubernetes Setup. You can also skip each Chapter and start directly with the Docker setup or even directly with the Kubernetes setup as all the required Files are also available on docker hub \url{https://hub.docker.com/r/toky03/} and on github \url{https://github.com/toky03/kubernetes-full-stack}.
+
+Please do not heasitate to contact me marco.jakob3@gmail.com if you find a bug, a mistake or if you have some suggestions for improvement.
+
 \section{Prerequisites}
 To create the application it is assumed that we already have a machine with the following Software running:
 \begin{itemize}
