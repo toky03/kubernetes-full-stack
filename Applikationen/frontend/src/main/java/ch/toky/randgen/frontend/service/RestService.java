@@ -3,6 +3,8 @@ package ch.toky.randgen.frontend.service;
 import ch.toky.randgen.frontend.model.PodStat;
 import ch.toky.randgen.frontend.model.RandomNumber;
 import ch.toky.randgen.frontend.model.Series;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,8 +30,11 @@ public class RestService {
         return restTemplate.getForObject(randNumURL, RandomNumber.class);
     }
 
-    public List<Series> getHistory(){
+    public List<Series> getHistory() {
         Series[] series = restTemplate.getForObject(historyURL, Series[].class);
-        return  Arrays.asList(series);
+        return Arrays.asList(series);
+
     }
+
+
 }
